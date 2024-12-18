@@ -1,19 +1,41 @@
-package com.coderhouse.Models;
+package com.coderhouse.ProyectoFinal_PrimeraEntrega.Models;
+
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name="products")
 public class Product {
 
+    @Id // Primary Key
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Autoincremental
+    @Column(name="product_id")
     private Long mProductId;
+    @Column(name="product_name")
     private String mProductName;
+    @Column(name="product_description")
     private String mProductDescription;
+    @Column(name="product_category")
     private String mProductCategory;
+    @Column(name="product_code", unique = true, nullable = false)
     private String mProductCode;
+    @Column(name="product_price")
     private String mProductPrice;
-    private String mProductTax;
+    @Column(name="product_tax_percent")
+    private String mProductTaxPercent;
+    @Column(name="product_creation_date")
     private LocalDateTime mProductCreationDate;
 
-
+    public Product(String pProductName, String pProductDescription, String pProductCategory, String pProductCode, String pProductPrice, String pProductTaxPercent) {
+        this.mProductName = pProductName;
+        this.mProductDescription = pProductDescription;
+        this.mProductCategory = pProductCategory;
+        this.mProductCode = pProductCode;
+        this.mProductPrice = pProductPrice;
+        this.mProductTaxPercent = pProductTaxPercent;
+        this.mProductCreationDate=LocalDateTime.now();
+    }
 
     public Long getProductId() {
         return mProductId;
@@ -63,12 +85,12 @@ public class Product {
         mProductPrice = pProductPrice;
     }
 
-    public String getProductTax() {
-        return mProductTax;
+    public String getProductTaxPercent() {
+        return mProductTaxPercent;
     }
 
-    public void setProductTax(String pProductTax) {
-        mProductTax = pProductTax;
+    public void setProductTaxPercent(String pProductTaxPercent) {
+        mProductTaxPercent = pProductTaxPercent;
     }
 
     public LocalDateTime getProductCreationDate() {
@@ -88,7 +110,7 @@ public class Product {
                 ", mProductCategory='" + mProductCategory + '\'' +
                 ", mProductCode='" + mProductCode + '\'' +
                 ", mProductPrice='" + mProductPrice + '\'' +
-                ", mProductTax='" + mProductTax + '\'' +
+                ", mProductTaxPercent='" + mProductTaxPercent + '\'' +
                 ", mProductCreationDate=" + mProductCreationDate +
                 '}';
     }

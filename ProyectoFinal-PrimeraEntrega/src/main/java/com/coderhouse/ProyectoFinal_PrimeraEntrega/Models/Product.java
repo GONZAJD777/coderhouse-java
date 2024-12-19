@@ -20,6 +20,8 @@ public class Product {
     private String mProductCategory;
     @Column(name="product_code", unique = true, nullable = false)
     private String mProductCode;
+    @Column(name="product_stock")
+    private Integer mProductStock;
     @Column(name="product_price")
     private String mProductPrice;
     @Column(name="product_tax_percent")
@@ -27,7 +29,7 @@ public class Product {
     @Column(name="product_creation_date")
     private LocalDateTime mProductCreationDate;
 
-    public Product(String pProductName, String pProductDescription, String pProductCategory, String pProductCode, String pProductPrice, String pProductTaxPercent) {
+    public Product(String pProductName, String pProductDescription, String pProductCategory, String pProductCode, String pProductPrice, String pProductTaxPercent,Integer pProductStock) {
         this.mProductName = pProductName;
         this.mProductDescription = pProductDescription;
         this.mProductCategory = pProductCategory;
@@ -35,6 +37,7 @@ public class Product {
         this.mProductPrice = pProductPrice;
         this.mProductTaxPercent = pProductTaxPercent;
         this.mProductCreationDate=LocalDateTime.now();
+        this.mProductStock=pProductStock;
     }
 
     public Long getProductId() {
@@ -101,6 +104,14 @@ public class Product {
         mProductCreationDate = pProductCreationDate;
     }
 
+    public Integer getProductStock() {
+        return mProductStock;
+    }
+
+    public void setProductStock(Integer pProductStock) {
+        this.mProductStock = pProductStock;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -109,6 +120,7 @@ public class Product {
                 ", mProductDescription='" + mProductDescription + '\'' +
                 ", mProductCategory='" + mProductCategory + '\'' +
                 ", mProductCode='" + mProductCode + '\'' +
+                ", mProductStock=" + mProductStock +
                 ", mProductPrice='" + mProductPrice + '\'' +
                 ", mProductTaxPercent='" + mProductTaxPercent + '\'' +
                 ", mProductCreationDate=" + mProductCreationDate +

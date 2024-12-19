@@ -1,5 +1,6 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.Dao;
 
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.Models.*;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaDelete;
@@ -9,12 +10,6 @@ import jakarta.persistence.metamodel.Metamodel;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
-
-
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.Models.Cart;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.Models.Client;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.Models.Product;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.Models.Ticket;
 
 import java.util.List;
 import java.util.Map;
@@ -37,6 +32,12 @@ public class DaoFactory {
     }
 
     @Transactional
+    public void cartDetailtPersistence(CartDetail pCartDetail) {
+        em.persist(pCartDetail);
+    }
+
+
+    @Transactional
     public void productPersistence(Product pProduct) {
         em.persist(pProduct);
     }
@@ -45,4 +46,8 @@ public class DaoFactory {
     public void ticketPersistence(Ticket pTicket) {
         em.persist(pTicket);
     }
+
+
+
+
 }

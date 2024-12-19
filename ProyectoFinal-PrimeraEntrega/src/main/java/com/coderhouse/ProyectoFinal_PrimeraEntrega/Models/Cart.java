@@ -15,15 +15,21 @@ public class Cart {
     @Column(name="cart_id")
     private Long mCartID;
 
-    @OneToOne(mappedBy = "mClientCart", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "mClientCart", fetch = FetchType.EAGER)
     private Client mCartClient;
 
-    @OneToMany(cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name="cart_detail_cart_id")
-    private List<CartDetail> mCartDetailList= new ArrayList<>();
+    private List<CartDetail> mCartDetailList;
 
     @Column(name="cart_creation_date")
     private LocalDateTime mCartCreationDate;
+
+    public Cart(Client pCartClient, List<CartDetail> pCartDetailList) {
+        this.mCartClient = pCartClient;
+        this.mCartDetailList = pCartDetailList;
+        this.mCartCreationDate = LocalDateTime.now();
+    }
 
     public Long getCartID() {
         return mCartID;

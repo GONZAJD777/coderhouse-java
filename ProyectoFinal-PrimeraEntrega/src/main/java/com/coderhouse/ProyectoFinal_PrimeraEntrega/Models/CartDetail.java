@@ -19,6 +19,11 @@ public class CartDetail {
     @Column(name="cart_detail_item_quantity")
     private int mCartDetailItemQuantity;
 
+    public CartDetail(Product mCartDetailProduct, int mCartDetailItemQuantity) {
+        this.mCartDetailProduct = mCartDetailProduct;
+        this.mCartDetailItemQuantity = mCartDetailItemQuantity;
+    }
+
     //-*****************************************************************-//
 
     public Long getCartDetailId() {

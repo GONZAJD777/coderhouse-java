@@ -1,4 +1,4 @@
-package com.coderhouse.ProyectoFinal_PrimeraEntrega.Models;
+package com.coderhouse.ProyectoFinal_PrimeraEntrega.models;
 
 
 import jakarta.persistence.*;
@@ -26,6 +26,10 @@ public class TicketItem {
 
     @Column(name="ticket_item_sub_total")
     private Float mTicketItemSubTotal;
+
+    public TicketItem() {
+        super();
+    }
 
     public Long getTicketItemId() {
         return mTicketItemId;

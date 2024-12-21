@@ -1,4 +1,4 @@
-package com.coderhouse.ProyectoFinal_PrimeraEntrega.Models;
+package com.coderhouse.ProyectoFinal_PrimeraEntrega.models;
 
 import jakarta.persistence.*;
 
@@ -29,7 +29,11 @@ public class Product {
     @Column(name="product_creation_date")
     private LocalDateTime mProductCreationDate;
 
-    public Product(String pProductName, String pProductDescription, String pProductCategory, String pProductCode, String pProductPrice, String pProductTaxPercent,Integer pProductStock) {
+    public Product() {
+        super();
+    }
+
+    public Product(String pProductName, String pProductDescription, String pProductCategory, String pProductCode, String pProductPrice, String pProductTaxPercent, Integer pProductStock) {
         this.mProductName = pProductName;
         this.mProductDescription = pProductDescription;
         this.mProductCategory = pProductCategory;

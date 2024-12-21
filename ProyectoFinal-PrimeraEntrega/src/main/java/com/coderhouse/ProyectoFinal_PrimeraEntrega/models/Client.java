@@ -39,7 +39,7 @@ public class Client {
         this.mClientName = pClientName;
         this.mClientAddress = pClientAddress;
         this.mClientDocId = pClientDocId;
-        //this.mClientCreationDate= LocalDateTime.now();
+        this.mClientCreationDate= LocalDateTime.now();
     }
 
     public Long getmClientId() {

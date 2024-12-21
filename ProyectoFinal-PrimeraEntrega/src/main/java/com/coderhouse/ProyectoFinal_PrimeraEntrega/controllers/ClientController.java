@@ -42,16 +42,16 @@ public class ClientController {
 
     @PostMapping
     public Client createClient(@RequestBody Client pClient) {
-        System.out.println("Client Name:" + pClient.getClientName());
-        System.out.println("Client Address:" + pClient.getClientAddress());
-        System.out.println("Client Cart:" + pClient.getClientCart());
-        System.out.println("Client DocId:" + pClient.getClientDocId());
+        System.out.println("Client Name:" + pClient.getmClientName());
+        System.out.println("Client Address:" + pClient.getmClientAddress());
+        System.out.println("Client Cart:" + pClient.getmClientCart());
+        System.out.println("Client DocId:" + pClient.getmClientDocId());
         Cart pCart= new Cart();
-        pCart.setCartCreationDate(LocalDateTime.now());
-        //pCart.setCartClient(pClient);
-        pClient.setClientCart(pCart);
+        pCart.setmCartCreationDate(LocalDateTime.now());
+        pCart.setmCartClient(pClient);
+        pClient.setmClientCart(pCart);
 
-        pClient.setClientCreationDate(LocalDateTime.now());
+        pClient.setmClientCreationDate(LocalDateTime.now());
         return mClientRepository.save(pClient);
     }
 

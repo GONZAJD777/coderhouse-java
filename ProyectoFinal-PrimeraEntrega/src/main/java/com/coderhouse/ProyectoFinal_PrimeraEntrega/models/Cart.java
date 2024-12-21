@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,12 +18,10 @@ public class Cart {
     private Long mCartId;
 
     @OneToOne(mappedBy = "mClientCart")
-    //@JsonIgnoreProperties("mClientCart")
     private Client mCartClient;
 
     @OneToMany(mappedBy = "mCartDetailCart", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    //@JoinColumn(name="cart_detail_cart_id")
-    private List<CartDetail> mCartDetailList;
+    private List<CartDetail> mCartDetailList=new ArrayList<>();
 
     @Column(name="cart_creation_date")
     private LocalDateTime mCartCreationDate;
@@ -45,26 +44,27 @@ public class Cart {
         mCartId = pCartId;
     }
 
-    public Client getCartClient() {
+    public Client getmCartClient() {
         return mCartClient;
     }
 
-    public void setCartClient(Client pCartClient) {
+    public void setmCartClient(Client pCartClient) {
         mCartClient = pCartClient;
     }
 
-    public List<CartDetail> getCartDetailList() {
+    public List<CartDetail> getmCartDetailList() {
         return mCartDetailList;
     }
 
-    public void setCartDetailList(List<CartDetail> pCartDetailList) {
+    public void setmCartDetailList(List<CartDetail> pCartDetailList) {
         mCartDetailList = pCartDetailList;
     }
 
-    public LocalDateTime getCartCreationDate() {
+    public LocalDateTime getmCartCreationDate() {
         return mCartCreationDate;
     }
-    public void setCartCreationDate(LocalDateTime pCartCreationDate) {
+
+    public void setmCartCreationDate(LocalDateTime pCartCreationDate) {
         mCartCreationDate = pCartCreationDate;
     }
 

@@ -29,7 +29,6 @@ public class Client {
 
     @OneToOne( cascade = CascadeType.ALL)
     @JoinColumn(name = "client_cart_id", referencedColumnName = "cart_id")
-    //@JsonIgnoreProperties("mCartClient")
     private Cart mClientCart;
 
     public Client() {
@@ -48,42 +47,48 @@ public class Client {
     }
 
     public void setmClientId(Long pClientId) {
-        this.mClientId = pClientId;
+        mClientId = pClientId;
     }
 
-    public String getClientName() {
+    public String getmClientName() {
         return mClientName;
     }
 
-    public void setClientName(String pClientName) {
-        this.mClientName = pClientName;
+    public void setmClientName(String pClientName) {
+        mClientName = pClientName;
     }
 
-    public String getClientAddress() {
+    public String getmClientAddress() {
         return mClientAddress;
     }
 
-    public void setClientAddress(String pClientAddress) {
-        this.mClientAddress = pClientAddress;
+    public void setmClientAddress(String pClientAddress) {
+        mClientAddress = pClientAddress;
     }
 
-    public Long getClientDocId() {
+    public Long getmClientDocId() {
         return mClientDocId;
     }
 
-    public void setClientDocId(Long pClientDocId) {
-        this.mClientDocId = pClientDocId;
+    public void setmClientDocId(Long pClientDocId) {
+        mClientDocId = pClientDocId;
     }
 
-    public LocalDateTime getClientCreationDate() {
+    public LocalDateTime getmClientCreationDate() {
         return mClientCreationDate;
     }
 
-    public void setClientCreationDate(LocalDateTime pClientCreationDate) { this.mClientCreationDate=pClientCreationDate; }
+    public void setmClientCreationDate(LocalDateTime pClientCreationDate) {
+        mClientCreationDate = pClientCreationDate;
+    }
 
-    public Cart getClientCart() { return mClientCart; }
+    public Cart getmClientCart() {
+        return mClientCart;
+    }
 
-    public void setClientCart(Cart pClientCart) { mClientCart = pClientCart; }
+    public void setmClientCart(Cart pClientCart) {
+        mClientCart = pClientCart;
+    }
 
     @Override
     public String toString() {

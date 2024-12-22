@@ -17,7 +17,6 @@ public class CartDetail {
     @JoinColumn(name = "cart_detail_cart_id", referencedColumnName = "cart_id")
     private Cart mCartDetailCart;
 
-
     @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinColumn(name = "cart_detail_product_id", referencedColumnName = "product_id")
     private Product mCartDetailProduct;
@@ -26,7 +25,6 @@ public class CartDetail {
     private int mCartDetailItemQuantity;
 
     public CartDetail() {
-        super();
     }
 
     public CartDetail(Product mCartDetailProduct, int mCartDetailItemQuantity) {
@@ -36,35 +34,40 @@ public class CartDetail {
 
     //-*****************************************************************-//
 
-    public Long getCartDetailId() {
+    public Long getmCartDetailId() {
         return mCartDetailId;
     }
 
-    public void setCartDetailId(Long pCartDetailId) {
+    public void setmCartDetailId(Long pCartDetailId) {
         mCartDetailId = pCartDetailId;
     }
-    public Cart getCartDetailCart() {
+
+    public Cart getmCartDetailCart() {
         return mCartDetailCart;
     }
 
-    public void setCartDetailCart(Cart pCartDetailCart) {
+    public void setmCartDetailCart(Cart pCartDetailCart) {
         mCartDetailCart = pCartDetailCart;
     }
-    public Product getCartDetailProduct() {
+
+    public Product getmCartDetailProduct() {
         return mCartDetailProduct;
     }
 
-    public void setCartDetailProduct(Product pCartDetailProduct) {
+    public void setmCartDetailProduct(Product pCartDetailProduct) {
         mCartDetailProduct = pCartDetailProduct;
     }
 
-    public int getCartDetailItemQuantity() {
+    public int getmCartDetailItemQuantity() {
         return mCartDetailItemQuantity;
     }
 
-    public void setCartDetailItemQuantity(int pCartDetailItemQuantity) {
+    public void setmCartDetailItemQuantity(int pCartDetailItemQuantity) {
         mCartDetailItemQuantity = pCartDetailItemQuantity;
     }
+
+
+    //-*****************************************************************-//
 
     @Override
     public String toString() {

@@ -22,7 +22,4 @@ public class DaoFactory {
         em.persist(pProduct);
     }
 
-
-
-
 }

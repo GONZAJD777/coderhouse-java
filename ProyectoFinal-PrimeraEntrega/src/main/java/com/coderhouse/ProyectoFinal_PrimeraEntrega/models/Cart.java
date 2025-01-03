@@ -72,7 +72,7 @@ public class Cart {
     public String toString() {
         return "Cart{" +
                 "mCartId=" + mCartId +
-                ", mCartClientId=" + mCartClient +
+                ", mCartClient=" + mCartClient +
                 ", mCartDetailList=" + mCartDetailList +
                 ", mCartCreationDate=" + mCartCreationDate +
                 '}';

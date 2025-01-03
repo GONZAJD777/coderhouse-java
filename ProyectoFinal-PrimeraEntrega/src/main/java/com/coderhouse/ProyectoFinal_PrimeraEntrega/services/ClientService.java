@@ -4,6 +4,7 @@ package com.coderhouse.ProyectoFinal_PrimeraEntrega.services;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Cart;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Client;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.repositories.ClientRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,11 @@ public class ClientService {
 
     @Autowired
     private ClientRepository mClientRepository;
+    private CartService mCartService;
 
-    public ClientService(ClientRepository pClientRepository) {
+    public ClientService(ClientRepository pClientRepository, CartService mCartService) {
         this.mClientRepository = pClientRepository;
+        this.mCartService = mCartService;
     }
 
     public List<Client> listAll () {
@@ -32,16 +35,18 @@ public class ClientService {
         return mClientRepository.findById(pClientId).get();
     }
 
+    @Transactional
     public Client createClient(Client pClient) {
-
-        Cart pCart= new Cart();
-        pCart.setmCartCreationDate(LocalDateTime.now());
-        pCart.setmCartClient(pClient);
-        pClient.setmClientCart(pCart);
-
-        pClient.setmClientCreationDate(LocalDateTime.now());
-
-        return mClientRepository.save(pClient);
+        try {
+            // Crear y asignar el carrito al cliente
+                Cart pCart = mCartService.createCart(pClient); pClient.setmClientCart(pCart);
+            // Asignar la fecha de creación del cliente
+                pClient.setmClientCreationDate(LocalDateTime.now());
+            // Guardar el cliente (y el carrito debido a la relación)
+                return mClientRepository.save(pClient);
+            } catch (Exception e) { // Manejar excepciones si es necesario
+                throw new RuntimeException("Error creating client: " + e.getMessage(), e);
+        }
     }
 
 }

@@ -4,10 +4,12 @@ import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Cart;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Client;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.repositories.ClientRepository;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.services.ClientService;
+import jakarta.ws.rs.InternalServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,8 +51,10 @@ public class ClientController {
         System.out.println("Client DocId:" + pClient.getmClientDocId());
         try {
             return ResponseEntity.ok(mClientService.createClient(pClient));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (HttpClientErrorException.BadRequest e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (InternalServerErrorException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
 
     }

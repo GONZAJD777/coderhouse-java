@@ -96,7 +96,7 @@ public class Client {
                 "mClientId=" + mClientId +
                 ", mClientName='" + mClientName + '\'' +
                 ", mClientAddress='" + mClientAddress + '\'' +
-                ", mClientDocID=" + mClientDocId +
+                ", mClientDocId=" + mClientDocId +
                 ", mClientCreationDate=" + mClientCreationDate +
                 ", mClientCart=" + mClientCart +
                 '}';

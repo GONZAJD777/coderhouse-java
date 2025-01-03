@@ -17,7 +17,7 @@ public class CartDetail {
     @JoinColumn(name = "cart_detail_cart_id", referencedColumnName = "cart_id")
     private Cart mCartDetailCart;
 
-    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cart_detail_product_id", referencedColumnName = "product_id")
     private Product mCartDetailProduct;
 

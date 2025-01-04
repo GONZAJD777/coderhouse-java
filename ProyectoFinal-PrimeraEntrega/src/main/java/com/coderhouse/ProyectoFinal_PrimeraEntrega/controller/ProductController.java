@@ -1,7 +1,7 @@
-package com.coderhouse.ProyectoFinal_PrimeraEntrega.controllers;
+package com.coderhouse.ProyectoFinal_PrimeraEntrega.controller;
 
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Product;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.services.ProductService;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Product;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.ProductService;
 import jakarta.ws.rs.InternalServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

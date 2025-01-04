@@ -1,6 +1,6 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.dao;
 
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.*;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.*;
 import jakarta.persistence.*;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;

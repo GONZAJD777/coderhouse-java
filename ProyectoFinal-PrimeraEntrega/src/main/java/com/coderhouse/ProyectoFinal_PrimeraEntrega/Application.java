@@ -1,16 +1,7 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega;
 
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.dao.DaoFactory;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Cart;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.CartDetail;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Client;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Product;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.util.ArrayList;
 
 
 @SpringBootApplication

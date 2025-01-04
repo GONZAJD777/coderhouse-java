@@ -1,9 +1,7 @@
-package com.coderhouse.ProyectoFinal_PrimeraEntrega.services;
+package com.coderhouse.ProyectoFinal_PrimeraEntrega.service;
 
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Cart;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Client;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Product;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.repositories.ProductRepository;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Product;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

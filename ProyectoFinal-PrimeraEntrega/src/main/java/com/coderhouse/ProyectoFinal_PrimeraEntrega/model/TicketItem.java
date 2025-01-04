@@ -1,4 +1,4 @@
-package com.coderhouse.ProyectoFinal_PrimeraEntrega.models;
+package com.coderhouse.ProyectoFinal_PrimeraEntrega.model;
 
 
 import jakarta.persistence.*;

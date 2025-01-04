@@ -1,24 +1,18 @@
-package com.coderhouse.ProyectoFinal_PrimeraEntrega.services;
+package com.coderhouse.ProyectoFinal_PrimeraEntrega.service;
 
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Cart;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.CartDetail;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Client;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Product;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.repositories.CartDetailRepository;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.repositories.CartRepository;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.repositories.ClientRepository;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.repositories.ProductRepository;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Cart;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.CartDetail;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Client;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Product;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.repository.CartDetailRepository;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.repository.CartRepository;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Service

@@ -1,12 +1,11 @@
-package com.coderhouse.ProyectoFinal_PrimeraEntrega.services;
+package com.coderhouse.ProyectoFinal_PrimeraEntrega.service;
 
 
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Cart;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Client;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.repositories.ClientRepository;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Cart;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Client;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.repository.ClientRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,11 +16,12 @@ public class ClientService {
 
     @Autowired
     private ClientRepository mClientRepository;
+    @Autowired
     private CartService mCartService;
 
-    public ClientService(ClientRepository pClientRepository, CartService mCartService) {
+    public ClientService(ClientRepository pClientRepository, CartService pCartService) {
         this.mClientRepository = pClientRepository;
-        this.mCartService = mCartService;
+        this.mCartService = pCartService;
     }
 
     public List<Client> listAll () {

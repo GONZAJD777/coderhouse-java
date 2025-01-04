@@ -1,9 +1,9 @@
-package com.coderhouse.ProyectoFinal_PrimeraEntrega.controllers;
+package com.coderhouse.ProyectoFinal_PrimeraEntrega.controller;
 
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Cart;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.models.Client;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.repositories.ClientRepository;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.services.ClientService;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ClientDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.ClientMapper;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Client;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.ClientService;
 import jakarta.ws.rs.InternalServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,9 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -30,33 +29,34 @@ public class ClientController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Client>> getAllClients() {
-        return  ResponseEntity.ok(mClientService.listAll());
+    public ResponseEntity<List<ClientDTO>> getAllClients() {
+        return  ResponseEntity.ok(ClientMapper.toDTO(mClientService.listAll()));
     }
 
     @GetMapping("/{pClientId}")
-    public ResponseEntity<Client> getClientById(@PathVariable Long pClientId){
+    public ResponseEntity<List<ClientDTO>> getClientById(@PathVariable Long pClientId){
        try {
-           return ResponseEntity.ok(mClientService.getClient(pClientId));
+           List<Client> mClientList = List.of(mClientService.getClient(pClientId));
+           return ResponseEntity.ok(ClientMapper.toDTO(mClientList));
        }catch (Exception e){
            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
        }
     }
 
     @PostMapping
-    public ResponseEntity<Client> createClient(@RequestBody Client pClient) {
+    public ResponseEntity<List<ClientDTO>> createClient(@RequestBody Client pClient) {
         System.out.println("Client Name:" + pClient.getmClientName());
         System.out.println("Client Address:" + pClient.getmClientAddress());
         System.out.println("Client Cart:" + pClient.getmClientCart());
         System.out.println("Client DocId:" + pClient.getmClientDocId());
         try {
-            return ResponseEntity.ok(mClientService.createClient(pClient));
+            List<Client> mClientList = List.of(mClientService.createClient(pClient));
+            return ResponseEntity.ok(ClientMapper.toDTO(mClientList));
         } catch (HttpClientErrorException.BadRequest e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (InternalServerErrorException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-
     }
 
 }

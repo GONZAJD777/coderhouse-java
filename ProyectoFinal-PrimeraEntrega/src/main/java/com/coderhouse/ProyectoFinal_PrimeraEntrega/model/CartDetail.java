@@ -1,7 +1,6 @@
-package com.coderhouse.ProyectoFinal_PrimeraEntrega.models;
+package com.coderhouse.ProyectoFinal_PrimeraEntrega.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity

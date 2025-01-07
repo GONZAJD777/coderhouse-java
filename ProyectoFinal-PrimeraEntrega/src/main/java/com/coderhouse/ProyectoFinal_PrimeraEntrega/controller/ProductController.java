@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/products")
@@ -55,6 +56,55 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    @PutMapping("/{pProductId}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long pProductId, @RequestBody Map<String, Object> pRequestBody) {
+        Product mProduct = new Product();
+
+        if (pProductId != null) {
+            mProduct.setmProductId(pProductId);
+        }
+
+        if (pRequestBody.get("mProductName") != null) {
+            mProduct.setmProductName(pRequestBody.get("mProductName").toString());
+        }
+
+        if (pRequestBody.get("mProductDescription") != null) {
+            mProduct.setmProductDescription(pRequestBody.get("mProductDescription").toString());
+        }
+
+        if (pRequestBody.get("mProductCategory") != null) {
+            mProduct.setmProductCategory(pRequestBody.get("mProductCategory").toString());
+        }
+
+        if (pRequestBody.get("mProductCode") != null) {
+            mProduct.setmProductCode(pRequestBody.get("mProductCode").toString());
+        }
+
+        if (pRequestBody.get("mProductStock") != null) {
+            mProduct.setmProductStock((Integer) pRequestBody.get("mProductStock"));
+        }
+
+        if (pRequestBody.get("mProductPrice") != null) {
+            mProduct.setmProductPrice((Float) pRequestBody.get("mProductPrice"));
+        }
+
+        if (pRequestBody.get("mProductTaxPercent") != null) {
+            mProduct.setmProductTaxPercent((Float) pRequestBody.get("mProductTaxPercent"));
+        }
+
+
+
+        try {
+            return ResponseEntity.ok(mProductService.updateProduct(mProduct));
+        } catch (HttpClientErrorException.BadRequest e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (InternalServerErrorException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
 
 
 }

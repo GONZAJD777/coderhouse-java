@@ -34,43 +34,43 @@ public class Ticket {
     }
 
 
-    public Long getTicketId() {
+    public Long getmTicketId() {
         return mTicketId;
     }
 
-    public void setTicketId(Long pTicketId) {
+    public void setmTicketId(Long pTicketId) {
         mTicketId = pTicketId;
     }
 
-    public Client getTicketClient() {
+    public Client getmTicketClient() {
         return mTicketClient;
     }
 
-    public void setTicketClient(Client pTicketClient) {
+    public void setmTicketClient(Client pTicketClient) {
         mTicketClient = pTicketClient;
     }
 
-    public LocalDateTime getTicketCreationDate() {
+    public LocalDateTime getmTicketCreationDate() {
         return mTicketCreationDate;
     }
 
-    public void setTicketCreationDate(LocalDateTime pTicketCreationDate) {
+    public void setmTicketCreationDate(LocalDateTime pTicketCreationDate) {
         mTicketCreationDate = pTicketCreationDate;
     }
 
-    public List<TicketItem> getTicketDetail() {
+    public List<TicketItem> getmTicketDetail() {
         return mTicketDetail;
     }
 
-    public void setTicketDetail(List<TicketItem> pTicketDetail) {
+    public void setmTicketDetail(List<TicketItem> pTicketDetail) {
         mTicketDetail = pTicketDetail;
     }
 
-    public Float getTicketTotal() {
+    public Float getmTicketTotal() {
         return mTicketTotal;
     }
 
-    public void setTicketTotal(Float pTicketTotal) {
+    public void setmTicketTotal(Float pTicketTotal) {
         mTicketTotal = pTicketTotal;
     }
 

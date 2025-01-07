@@ -1,43 +1,17 @@
-package com.coderhouse.ProyectoFinal_PrimeraEntrega.model;
+package com.coderhouse.ProyectoFinal_PrimeraEntrega.dto;
 
+import jakarta.persistence.Column;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name="tickets_item")
-public class TicketItem {
-
-    @Id // Primary Key
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Autoincremental
-    @Column(name="ticket_item_id")
-    private Long mTicketItemId;
-
-    @Column(name="ticket_item_product_name")
+public class TicketItemDTO {
     private String mTicketItemProductName;
 
-    @Column(name="ticket_item_product_price")
     private Float mTicketItemProductPrice;
 
-    @Column(name="ticket_item_product_tax")
     private Float mTicketItemProductTax;
 
-    @Column(name="ticket_item_product_Quantity")
     private Integer mTicketItemProductQuantity;
 
-    @Column(name="ticket_item_sub_total")
     private Float mTicketItemSubTotal;
-
-    public TicketItem() {
-        super();
-    }
-
-    public Long getmTicketItemId() {
-        return mTicketItemId;
-    }
-
-    public void setmTicketItemId(Long pTicketItemId) {
-        mTicketItemId = pTicketItemId;
-    }
 
     public String getmTicketItemProductName() {
         return mTicketItemProductName;
@@ -77,17 +51,5 @@ public class TicketItem {
 
     public void setmTicketItemSubTotal(Float pTicketItemSubTotal) {
         mTicketItemSubTotal = pTicketItemSubTotal;
-    }
-
-    @Override
-    public String toString() {
-        return "TicketItem{" +
-                "mTicketItemId=" + mTicketItemId +
-                ", mTicketItemProductName='" + mTicketItemProductName + '\'' +
-                ", mTicketItemProductPrice=" + mTicketItemProductPrice +
-                ", mTicketItemProductTax=" + mTicketItemProductTax +
-                ", mTicketItemProductQuantity=" + mTicketItemProductQuantity +
-                ", mTicketItemSubTotal=" + mTicketItemSubTotal +
-                '}';
     }
 }

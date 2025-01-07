@@ -2,6 +2,7 @@ package com.coderhouse.ProyectoFinal_PrimeraEntrega.controller;
 
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ClientDTO;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.ClientMapper;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.TicketMapper;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Client;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.ClientService;
 import jakarta.ws.rs.InternalServerErrorException;
@@ -30,7 +31,11 @@ public class ClientController {
 
     @GetMapping
     public ResponseEntity<List<ClientDTO>> getAllClients() {
-        return  ResponseEntity.ok(ClientMapper.toDTO(mClientService.listAll()));
+        try {
+            return  ResponseEntity.ok(ClientMapper.toDTO(mClientService.listAll()));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @GetMapping("/{pClientId}")

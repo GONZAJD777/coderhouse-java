@@ -28,8 +28,12 @@ public class CartController {
     }
 
     @GetMapping
-    public List<Cart> getAllCarts() {
-        return mCartService.listAll();
+    public ResponseEntity<List<CartDTO>> getAllCarts() {
+        try {
+            return ResponseEntity.ok(CartMapper.toDTO(mCartService.listAll()));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @GetMapping("/{pCartId}")

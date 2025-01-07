@@ -18,14 +18,27 @@ public class TicketService {
     private TicketRepository mTicketRepository;
     @Autowired
     private ClientRepository mClientRepository;
+    @Autowired
+    private CartService mCartService;
+    @Autowired
+    private ProductService mProductService;
 
-    public TicketService(TicketRepository pTicketRepository, ClientRepository pClientRepository) {
+
+    public TicketService(TicketRepository pTicketRepository, ClientRepository pClientRepository, CartService mCartService) {
         this.mTicketRepository = pTicketRepository;
         this.mClientRepository = pClientRepository;
+        this.mCartService = mCartService;
     }
 
     public List<Ticket> listAll() {
         return mTicketRepository.findAll();
+    }
+
+    public Ticket getTicketById(Long pTicketId) {
+        if(!mTicketRepository.existsById(pTicketId)) {
+            throw new RuntimeException("Ticket not found with ID: " + pTicketId);
+        }
+        return mTicketRepository.findById(pTicketId).get();
     }
 
     public List<Ticket> getTicketByClientId(Long pClientId) {
@@ -44,6 +57,7 @@ public class TicketService {
 
         Client mClient = mClientRepository.findById(pClientId).get();
         Cart mCart = mClient.getmClientCart();
+        float mTicketTotalAmount = 0f; //variable que acumulara el total de la venta a medida q se recorre el carrito y se agregan los productos al ticket
 
         if(mCart.getmCartDetailList().isEmpty()) {
             throw new RuntimeException("Cart has no items: " + pClientId);
@@ -53,12 +67,10 @@ public class TicketService {
         List<CartDetail> mNewCartDetailList = new ArrayList<>();
         List<CartDetail> mSoldCartDetailList = new ArrayList<>();
 
-        float mTicketTotalAmount = 0f;
-
         for (CartDetail mCartDetailItem : mCart.getmCartDetailList()){
             if(mCartDetailItem.getmCartDetailItemQuantity()<=mCartDetailItem.getmCartDetailProduct().getmProductStock()){
                 TicketItem mTicketItem = getTicketItem(mCartDetailItem);
-                mTicketTotalAmount = mTicketTotalAmount + mTicketItem.getTicketItemSubTotal();
+                mTicketTotalAmount = mTicketTotalAmount + mTicketItem.getmTicketItemSubTotal();
                 mTicketItemList.add(mTicketItem);
                 //items "vendidos", una vez creado el ticket, se debe actualizar el stock de los productos en la BD.
                 mSoldCartDetailList.add(mCartDetailItem);
@@ -69,25 +81,49 @@ public class TicketService {
             }
         }
 
-        mCart.setmCartDetailList(mNewCartDetailList);
-        
         Ticket mTicket = new Ticket();
-        mTicket.setTicketClient(mClient);
-        mTicket.setTicketCreationDate(LocalDateTime.now());
-        mTicket.setTicketDetail(mTicketItemList);
-        mTicket.setTicketTotal(mTicketTotalAmount);
+        mTicket.setmTicketClient(mClient);
+        mTicket.setmTicketCreationDate(LocalDateTime.now());
+        mTicket.setmTicketDetail(mTicketItemList);
+        mTicket.setmTicketTotal(mTicketTotalAmount);
 
-        return mTicketRepository.save(mTicket);
+        //procedemos a guardar el ticket en la base de datos
+        //luego se actualiza el carrito haciendo uso del metodo en CartService
+        //y se actualiza el nuevo stock del producto con el metodo de ProductService
+        try {
+            mTicketRepository.save(mTicket);
+            for (CartDetail mCartDetailItem :mSoldCartDetailList){
+                Product mAuxProduct = new Product();
+                //recuperamos el id del producto vendido
+                mAuxProduct.setmProductId(mCartDetailItem.getmCartDetailProduct().getmProductId());
+                //recuperamos el stock del producto vendido y le descotamos la cantidad de items
+                mAuxProduct.setmProductStock(mCartDetailItem.getmCartDetailProduct().getmProductStock()-mCartDetailItem.getmCartDetailItemQuantity());
+
+                mCartService.updateCart(mCart.getmCartId()
+                                        ,mCartDetailItem.getmCartDetailProduct().getmProductId()
+                                        ,mCartDetailItem.getmCartDetailItemQuantity()*(-1) //se llama al servicio de carritos para agregar una cantidad negativa lo q removera el item
+                );
+
+                //actualizamos el stock del producto
+                mProductService.updateProduct(mAuxProduct);
+            }
+        } catch (Exception e){
+            throw new RuntimeException("There is a problem creating the Ticket: " + mTicket.getmTicketId());
+        }
+
+        return mTicket ;
 
     }
 
     private TicketItem getTicketItem(CartDetail mCartDetailItem) {
         TicketItem mTicketItem = new TicketItem();
-        mTicketItem.setTicketItemProductName(mCartDetailItem.getmCartDetailProduct().getmProductName());
-        mTicketItem.setTicketItemProductPrice(mCartDetailItem.getmCartDetailProduct().getmProductPrice());
-        mTicketItem.setTicketItemProductTax(mCartDetailItem.getmCartDetailProduct().getmProductTaxPercent());
-        mTicketItem.setTicketItemProductQuantity(mCartDetailItem.getmCartDetailItemQuantity());
-        mTicketItem.setTicketItemSubTotal(mCartDetailItem.getmCartDetailItemQuantity()* mCartDetailItem.getmCartDetailProduct().getmProductPrice());
+        mTicketItem.setmTicketItemProductName(mCartDetailItem.getmCartDetailProduct().getmProductName());
+        mTicketItem.setmTicketItemProductPrice(mCartDetailItem.getmCartDetailProduct().getmProductPrice());
+        mTicketItem.setmTicketItemProductTax(mCartDetailItem.getmCartDetailProduct().getmProductTaxPercent());
+        mTicketItem.setmTicketItemProductQuantity(mCartDetailItem.getmCartDetailItemQuantity());
+        mTicketItem.setmTicketItemSubTotal(mCartDetailItem.getmCartDetailItemQuantity()* mCartDetailItem.getmCartDetailProduct().getmProductPrice());
         return mTicketItem;
     }
+
+
 }

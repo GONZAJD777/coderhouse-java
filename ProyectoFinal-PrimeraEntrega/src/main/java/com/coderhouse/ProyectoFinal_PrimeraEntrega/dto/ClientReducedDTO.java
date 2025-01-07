@@ -7,6 +7,7 @@ public class ClientReducedDTO {
     private long mClientId;
     private String mClientName;
     private String mClientAddress;
+    private long mClientDocId;
 
     public long getmClientId() {
         return mClientId;
@@ -30,5 +31,13 @@ public class ClientReducedDTO {
 
     public void setmClientAddress(String pClientAddress) {
         mClientAddress = pClientAddress;
+    }
+
+    public long getmClientDocId() {
+        return mClientDocId;
+    }
+
+    public void setmClientDocId(long pClientDocId) {
+        mClientDocId = pClientDocId;
     }
 }

@@ -1,14 +1,12 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.dto;
 
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Client;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class CartDTO {
     private long mCartId;
     private LocalDateTime mCartCreationDate;
-    private ClientReducedDTO mCartClientDTO;
+    private ClientReducedDTO mCartClient;
     private List<CartDetailDTO> mCartDetailList;
 
 
@@ -20,12 +18,12 @@ public class CartDTO {
         mCartCreationDate = pCartCreationDate;
     }
 
-    public ClientReducedDTO getmCartClientDTO() {
-        return mCartClientDTO;
+    public ClientReducedDTO getmCartClient() {
+        return mCartClient;
     }
 
-    public void setmCartClientDTO(ClientReducedDTO pCartClientDTO) {
-        mCartClientDTO = pCartClientDTO;
+    public void setmCartClient(ClientReducedDTO pCartClient) {
+        mCartClient = pCartClient;
     }
 
     public List<CartDetailDTO> getmCartDetailList() {

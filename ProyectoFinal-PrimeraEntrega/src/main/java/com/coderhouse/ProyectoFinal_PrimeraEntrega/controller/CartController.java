@@ -1,8 +1,7 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.controller;
 
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.CartDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.cart.CartDTO;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.CartMapper;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Cart;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.CartService;
 import jakarta.ws.rs.InternalServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;

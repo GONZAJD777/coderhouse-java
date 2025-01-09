@@ -25,16 +25,24 @@ public class ProductController {
 
 
     @GetMapping
-    public List<Product> getAllProducts() {
-        return mProductService.listAll();
+    public ResponseEntity<List<Product>> getAllProducts() {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(mProductService.listAll());
+        } catch (InternalServerErrorException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @GetMapping("/{pProductId}")
     public ResponseEntity<Product> getProductById(@PathVariable Long pProductId){
         try {
             return ResponseEntity.ok(mProductService.getProduct(pProductId));
-        }catch (Exception e){
+        }catch (HttpClientErrorException.NotFound e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }catch (HttpClientErrorException.BadRequest e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (InternalServerErrorException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
@@ -50,7 +58,9 @@ public class ProductController {
 
         try {
             return ResponseEntity.ok(mProductService.createProduct(pProduct));
-        } catch (HttpClientErrorException.BadRequest e){
+        }catch (HttpClientErrorException.NotFound e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }catch (HttpClientErrorException.BadRequest e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (InternalServerErrorException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -97,7 +107,9 @@ public class ProductController {
 
         try {
             return ResponseEntity.ok(mProductService.updateProduct(mProduct));
-        } catch (HttpClientErrorException.BadRequest e){
+        } catch (HttpClientErrorException.NotFound e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }catch (HttpClientErrorException.BadRequest e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (InternalServerErrorException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

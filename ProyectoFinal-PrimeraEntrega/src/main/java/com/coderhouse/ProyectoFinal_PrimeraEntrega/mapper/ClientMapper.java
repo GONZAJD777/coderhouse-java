@@ -1,12 +1,10 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper;
 
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ClientDTO;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ClientReducedDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.client.ClientDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.client.ClientReducedDTO;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Client;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ClientMapper {

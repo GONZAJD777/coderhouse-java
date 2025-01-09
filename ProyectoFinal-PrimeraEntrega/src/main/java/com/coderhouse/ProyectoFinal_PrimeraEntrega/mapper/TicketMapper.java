@@ -1,9 +1,11 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper;
 
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.*;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Cart;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Client;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ticket.TicketDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ticket.TicketItemDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ticket.TicketExtendedDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.CartDetail;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Ticket;
+import jakarta.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,4 +47,21 @@ public class TicketMapper {
 
         return mTicketDTOList;
     }
+
+    public static TicketExtendedDTO toExtendedDTO(@Nullable Ticket pTicket, List<CartDetail> pUnSoldItems) {
+        TicketExtendedDTO dto = new TicketExtendedDTO();
+        if (pTicket!=null)
+        {
+            dto.setmTicket(toDTO(pTicket));
+
+        } else {
+            dto.setmTicket(null);
+        }
+        dto.setNotEnoughStockProducts(CartDetailMapper.toDTO(pUnSoldItems));
+
+        return dto;
+    }
+
 }
+
+

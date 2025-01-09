@@ -1,8 +1,7 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.controller;
 
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ClientDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.client.ClientDTO;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.ClientMapper;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.TicketMapper;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Client;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.ClientService;
 import jakarta.ws.rs.InternalServerErrorException;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.ok;

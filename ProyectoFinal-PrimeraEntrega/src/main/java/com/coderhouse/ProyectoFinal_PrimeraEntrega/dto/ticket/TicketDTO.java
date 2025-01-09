@@ -1,8 +1,6 @@
-package com.coderhouse.ProyectoFinal_PrimeraEntrega.dto;
+package com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ticket;
 
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Client;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.TicketItem;
-import jakarta.persistence.*;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.client.ClientReducedDTO;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -59,4 +57,5 @@ public class TicketDTO {
     public void setmTicketTotal(Float pTicketTotal) {
         mTicketTotal = pTicketTotal;
     }
+
 }

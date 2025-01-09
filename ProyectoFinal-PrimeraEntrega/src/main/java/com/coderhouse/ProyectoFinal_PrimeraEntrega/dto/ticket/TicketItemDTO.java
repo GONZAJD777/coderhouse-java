@@ -1,6 +1,4 @@
-package com.coderhouse.ProyectoFinal_PrimeraEntrega.dto;
-
-import jakarta.persistence.Column;
+package com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ticket;
 
 public class TicketItemDTO {
     private String mTicketItemProductName;

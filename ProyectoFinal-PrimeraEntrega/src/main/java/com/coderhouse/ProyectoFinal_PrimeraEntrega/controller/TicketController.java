@@ -1,9 +1,10 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.controller;
 
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.TicketDTO;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.CartMapper;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ticket.TicketDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ticket.TicketExtendedDTO;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.TicketMapper;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Ticket;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.response.ApiResponse;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.TicketService;
 import jakarta.ws.rs.InternalServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,11 +56,22 @@ public class TicketController {
     }
 
     @PostMapping("/clients/{pClientId}")
-    public ResponseEntity<TicketDTO> createTicket(@PathVariable Long pClientId) {
-
+    public ResponseEntity<ApiResponse<TicketExtendedDTO>> createTicket(@PathVariable Long pClientId) {
         try {
-            Ticket mTicket = mTicketService.createTicket(pClientId);
-            return ResponseEntity.ok(TicketMapper.toDTO(mTicket));
+
+            TicketExtendedDTO mTicketExtendedDTO = mTicketService.createTicket(pClientId);
+            ApiResponse<TicketExtendedDTO> mApiResponse = new ApiResponse<>(true,"El Ticket se genero correctamente",mTicketExtendedDTO,null);
+
+            if(mTicketExtendedDTO.getmTicket()==null){
+                mApiResponse.setSuccess(false);
+                mApiResponse.setMessage("No se genero el ticket, ningun item del carrito del cliente paso las validaciones requeridas.");
+            }
+            if (!mTicketExtendedDTO.getNotEnoughStockProducts().isEmpty()) {
+                mApiResponse.addError("Some items could not be sold because there is not enough stock. See notEnoughStockProducts");
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
+
         } catch (HttpClientErrorException.BadRequest e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (InternalServerErrorException e) {

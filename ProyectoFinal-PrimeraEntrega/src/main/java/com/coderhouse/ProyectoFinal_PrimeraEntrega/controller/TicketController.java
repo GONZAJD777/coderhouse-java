@@ -64,7 +64,7 @@ public class TicketController {
 
             if(mTicketExtendedDTO.getmTicket()==null){
                 mApiResponse.setSuccess(false);
-                mApiResponse.setMessage("No se genero el ticket, ningun item del carrito del cliente paso las validaciones requeridas.");
+                mApiResponse.setMessage("Ticket couldn't be generated, none of the items in the client's cart fulfill the requirements.");
             }
             if (!mTicketExtendedDTO.getNotEnoughStockProducts().isEmpty()) {
                 mApiResponse.addError("Some items could not be sold because there is not enough stock. See notEnoughStockProducts");
@@ -73,9 +73,9 @@ public class TicketController {
             return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
 
         } catch (HttpClientErrorException.BadRequest e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false,e.getMessage(),null,List.of(e.getStatusText())));
         } catch (InternalServerErrorException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false,e.getMessage(),null,List.of(e.toString())));
         }
     }
 }

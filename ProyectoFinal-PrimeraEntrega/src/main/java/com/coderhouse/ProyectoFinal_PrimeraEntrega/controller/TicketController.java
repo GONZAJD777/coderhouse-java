@@ -2,6 +2,8 @@ package com.coderhouse.ProyectoFinal_PrimeraEntrega.controller;
 
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ticket.TicketDTO;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ticket.TicketExtendedDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.exception.CustomException;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.handler.ErrorHandler;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.TicketMapper;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Ticket;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.response.ApiResponse;
@@ -46,12 +48,19 @@ public class TicketController {
     }
 
     @GetMapping("/clients/{pClientId}")
-    public ResponseEntity<List<TicketDTO>> getTicketByClientId(@PathVariable Long pClientId){
+    public ResponseEntity<ApiResponse<List<TicketDTO>>> getTicketByClientId(@PathVariable Long pClientId){
         try {
-            List<Ticket> mTicketList = mTicketService.getTicketByClientId(pClientId);
-            return ResponseEntity.ok(TicketMapper.toDTO(mTicketList));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            List<TicketDTO> mTicketList = mTicketService.getTicketByClientId(pClientId);
+            ApiResponse<List<TicketDTO>> mApiResponse = new ApiResponse<>(true,"Listado de Tickets del cliente.",mTicketList,null);
+
+            return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
+        } catch (CustomException e) {
+            return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
+                    body(new ApiResponse<>(false,
+                            ErrorHandler.getErrorMessage(e.getErrorType()),
+                            null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())
+                    ));
         }
     }
 
@@ -60,7 +69,7 @@ public class TicketController {
         try {
 
             TicketExtendedDTO mTicketExtendedDTO = mTicketService.createTicket(pClientId);
-            ApiResponse<TicketExtendedDTO> mApiResponse = new ApiResponse<>(true,"El Ticket se genero correctamente",mTicketExtendedDTO,null);
+            ApiResponse<TicketExtendedDTO> mApiResponse = new ApiResponse<>(true,"El Ticket se genero correctamente.",mTicketExtendedDTO,null);
 
             if(mTicketExtendedDTO.getmTicket()==null){
                 mApiResponse.setSuccess(false);
@@ -72,10 +81,13 @@ public class TicketController {
 
             return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
 
-        } catch (HttpClientErrorException.BadRequest e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false,e.getMessage(),null,List.of(e.getStatusText())));
-        } catch (InternalServerErrorException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false,e.getMessage(),null,List.of(e.toString())));
+        } catch (CustomException e) {
+            return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
+                    body(new ApiResponse<>(false,
+                            ErrorHandler.getErrorMessage(e.getErrorType()),
+                            null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())
+                    ));
         }
     }
 }

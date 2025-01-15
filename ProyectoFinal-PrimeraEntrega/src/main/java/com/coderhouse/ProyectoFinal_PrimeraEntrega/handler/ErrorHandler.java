@@ -1,6 +1,7 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.handler;
 
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.ErrorType;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -10,9 +11,9 @@ import static com.coderhouse.ProyectoFinal_PrimeraEntrega.model.ErrorType.*;
 @Component
 public class ErrorHandler {
 
-    public ResponseEntity<String> handleError(ErrorType errorType) {
+    public static HttpStatus getStatus(ErrorType errorType) {
         HttpStatus status;
-        String responseMessage = "Error: " + errorType.getDescription();
+
 
         switch (errorType) {
             case PRODUCT_NOT_FOUND,
@@ -36,7 +37,13 @@ public class ErrorHandler {
                 break;
         }
 
-        return new ResponseEntity<>(responseMessage, status);
+        return status;
     }
+
+    public static String getErrorMessage (ErrorType errorType){
+        return "Error: " + errorType.getDescription();
+    }
+
+
 }
 

@@ -1,6 +1,8 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.service;
 
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ticket.TicketDTO;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ticket.TicketExtendedDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.exception.CustomException;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.TicketMapper;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.*;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.repository.ClientRepository;
@@ -43,16 +45,16 @@ public class TicketService {
         return mTicketRepository.findById(pTicketId).get();
     }
 
-    public List<Ticket> getTicketByClientId(Long pClientId) {
+    public List<TicketDTO> getTicketByClientId(Long pClientId) throws CustomException {
         if(!mClientRepository.existsById(pClientId)) {
-            throw new RuntimeException("Client not found with ID: " + pClientId);
+            throw new CustomException(ErrorType.CLIENT_NOT_FOUND);
         }
         Client mClient = mClientRepository.findById(pClientId).get();
-        return mTicketRepository.findByMTicketClient(mClient);
+        return TicketMapper.toDTO(mTicketRepository.findByMTicketClient(mClient));
     }
 
     @Transactional
-    public TicketExtendedDTO createTicket(Long pClientId) {
+    public TicketExtendedDTO createTicket(Long pClientId) throws CustomException {
 
         List<TicketItem> mTicketItemList = new ArrayList<>();
         List<CartDetail> mNewCartDetailList = new ArrayList<>();
@@ -60,7 +62,7 @@ public class TicketService {
         TicketExtendedDTO mTicketExtendedDTO = new TicketExtendedDTO();
 
         if(!mClientRepository.existsById(pClientId)) {
-            throw new RuntimeException("Client not found with ID: " + pClientId);
+            throw new CustomException(ErrorType.CLIENT_NOT_FOUND);
         }
 
         Client mClient = mClientRepository.findById(pClientId).get();
@@ -68,7 +70,7 @@ public class TicketService {
         float mTicketTotalAmount = 0f; //variable que acumulara el total de la venta a medida q se recorre el carrito y se agregan los productos al ticket
 
         if(mCart.getmCartDetailList().isEmpty()) {
-            throw new RuntimeException("Cart has no items: " + pClientId);
+            throw new CustomException(ErrorType.CART_IS_EMPTY);
         }
 
         for (CartDetail mCartDetailItem : mCart.getmCartDetailList()){

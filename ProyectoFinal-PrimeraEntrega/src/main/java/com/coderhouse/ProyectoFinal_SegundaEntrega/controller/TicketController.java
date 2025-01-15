@@ -1,0 +1,91 @@
+package com.coderhouse.ProyectoFinal_SegundaEntrega.controller;
+
+import com.coderhouse.ProyectoFinal_SegundaEntrega.dto.ticket.TicketDTO;
+import com.coderhouse.ProyectoFinal_SegundaEntrega.dto.ticket.TicketExtendedDTO;
+import com.coderhouse.ProyectoFinal_SegundaEntrega.exception.CustomException;
+import com.coderhouse.ProyectoFinal_SegundaEntrega.handler.ErrorHandler;
+import com.coderhouse.ProyectoFinal_SegundaEntrega.mapper.TicketMapper;
+import com.coderhouse.ProyectoFinal_SegundaEntrega.model.Ticket;
+import com.coderhouse.ProyectoFinal_SegundaEntrega.response.ApiResponse;
+import com.coderhouse.ProyectoFinal_SegundaEntrega.service.TicketService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/tickets")
+public class TicketController {
+
+    @Autowired
+    private TicketService mTicketService;
+
+    public TicketController(TicketService pTicketService) {
+        this.mTicketService = pTicketService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TicketDTO>> getAllTickets() {
+        try {
+            return ResponseEntity.ok(TicketMapper.toDTO(mTicketService.listAll()));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @GetMapping("/{pTicketId}")
+    public ResponseEntity<TicketDTO> getTicketById(@PathVariable Long pTicketId){
+        try {
+            Ticket mTicket = mTicketService.getTicketById(pTicketId);
+            return ResponseEntity.ok(TicketMapper.toDTO(mTicket));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @GetMapping("/clients/{pClientId}")
+    public ResponseEntity<ApiResponse<List<TicketDTO>>> getTicketByClientId(@PathVariable Long pClientId){
+        try {
+            List<TicketDTO> mTicketList = mTicketService.getTicketByClientId(pClientId);
+            ApiResponse<List<TicketDTO>> mApiResponse = new ApiResponse<>(true,"Listado de Tickets del cliente.",mTicketList,null);
+
+            return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
+        } catch (CustomException e) {
+            return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
+                    body(new ApiResponse<>(false,
+                            ErrorHandler.getErrorMessage(e.getErrorType()),
+                            null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())
+                    ));
+        }
+    }
+
+    @PostMapping("/clients/{pClientId}")
+    public ResponseEntity<ApiResponse<TicketExtendedDTO>> createTicket(@PathVariable Long pClientId) {
+        try {
+
+            TicketExtendedDTO mTicketExtendedDTO = mTicketService.createTicket(pClientId);
+            ApiResponse<TicketExtendedDTO> mApiResponse = new ApiResponse<>(true,"El Ticket se genero correctamente.",mTicketExtendedDTO,null);
+
+            if(mTicketExtendedDTO.getmTicket()==null){
+                mApiResponse.setSuccess(false);
+                mApiResponse.setMessage("Ticket couldn't be generated, none of the items in the client's cart fulfill the requirements.");
+            }
+            if (!mTicketExtendedDTO.getNotEnoughStockProducts().isEmpty()) {
+                mApiResponse.addError("Some items could not be sold because there is not enough stock. See notEnoughStockProducts");
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
+
+        } catch (CustomException e) {
+            return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
+                    body(new ApiResponse<>(false,
+                            ErrorHandler.getErrorMessage(e.getErrorType()),
+                            null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())
+                    ));
+        }
+    }
+}

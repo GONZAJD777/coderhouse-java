@@ -29,21 +29,29 @@ public class TicketController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TicketDTO>> getAllTickets() {
+    public ResponseEntity<ApiResponse<List<TicketDTO>>> getAllTickets() {
         try {
-            return ResponseEntity.ok(TicketMapper.toDTO(mTicketService.listAll()));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            List<TicketDTO> mTicketList = mTicketService.listAll();
+            ApiResponse<List<TicketDTO>> mApiResponse = new ApiResponse<>(true,"Listado de TODOS Tickets.",mTicketList,null);
+            return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
+        }catch (CustomException e){
+            return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
+                    body(new ApiResponse<>(false,ErrorHandler.getErrorMessage(e.getErrorType()),null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())));
         }
     }
 
     @GetMapping("/{pTicketId}")
-    public ResponseEntity<TicketDTO> getTicketById(@PathVariable Long pTicketId){
+    public ResponseEntity<ApiResponse<TicketDTO>> getTicketById(@PathVariable Long pTicketId){
         try {
-            Ticket mTicket = mTicketService.getTicketById(pTicketId);
-            return ResponseEntity.ok(TicketMapper.toDTO(mTicket));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            TicketDTO mTicketDTO = mTicketService.getTicketById(pTicketId);
+            ApiResponse<TicketDTO> mApiResponse = new ApiResponse<>(true,"Este es el ticket que buscabas.",mTicketDTO,null);
+
+            return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
+        }catch (CustomException e){
+            return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
+                    body(new ApiResponse<>(false,ErrorHandler.getErrorMessage(e.getErrorType()),null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())));
         }
     }
 
@@ -56,11 +64,8 @@ public class TicketController {
             return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
         } catch (CustomException e) {
             return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
-                    body(new ApiResponse<>(false,
-                            ErrorHandler.getErrorMessage(e.getErrorType()),
-                            null,
-                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())
-                    ));
+                    body(new ApiResponse<>(false,ErrorHandler.getErrorMessage(e.getErrorType()),null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())));
         }
     }
 
@@ -84,10 +89,8 @@ public class TicketController {
         } catch (CustomException e) {
             return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
                     body(new ApiResponse<>(false,
-                            ErrorHandler.getErrorMessage(e.getErrorType()),
-                            null,
-                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())
-                    ));
+                            ErrorHandler.getErrorMessage(e.getErrorType()),null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())));
         }
     }
 }

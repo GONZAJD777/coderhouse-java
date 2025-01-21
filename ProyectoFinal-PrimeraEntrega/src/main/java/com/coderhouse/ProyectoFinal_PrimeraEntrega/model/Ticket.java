@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -20,7 +21,7 @@ public class Ticket {
     private Client mTicketClient;
 
     @Column(name="ticket_creation_date")
-    private LocalDateTime mTicketCreationDate;
+    private Date mTicketCreationDate;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name="ticket_item_ticket_id")
@@ -50,11 +51,11 @@ public class Ticket {
         mTicketClient = pTicketClient;
     }
 
-    public LocalDateTime getmTicketCreationDate() {
+    public Date getmTicketCreationDate() {
         return mTicketCreationDate;
     }
 
-    public void setmTicketCreationDate(LocalDateTime pTicketCreationDate) {
+    public void setmTicketCreationDate(Date pTicketCreationDate) {
         mTicketCreationDate = pTicketCreationDate;
     }
 

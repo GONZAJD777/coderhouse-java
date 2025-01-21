@@ -1,11 +1,19 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.service;
 
 
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.client.ClientDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.product.ProductDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.exception.CustomException;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.ClientMapper;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.ProductMapper;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Cart;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Client;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.ErrorType;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Product;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.repository.ClientRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,29 +32,115 @@ public class ClientService {
         this.mCartService = pCartService;
     }
 
-    public List<Client> listAll () {
-        return mClientRepository.findAll();
+    public List<ClientDTO> listAll () throws CustomException {
+        try {
+            return ClientMapper.toDTO(mClientRepository.findAllActiveClients());
+        } catch (DataAccessException dbe) {
+            throw new CustomException(ErrorType.DATABASE_ISSUES);
+        } catch (RuntimeException rte){
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        } catch (Exception e){
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        }
     }
 
-    public Client getClient(Long pClientId) {
-        if(!mClientRepository.existsById(pClientId)) {
-         throw new RuntimeException("Client not found with ID: " + pClientId);
+
+    public ClientDTO getClient(Long pClientId) throws CustomException {
+
+        try {
+            if (!mClientRepository.existsActiveById(pClientId)) {
+                throw new CustomException(ErrorType.CLIENT_NOT_FOUND);
+            }
+            return ClientMapper.toDTO(mClientRepository.findActiveById(pClientId));
+
+        } catch (CustomException ce) {
+            throw ce;
+        } catch (DataAccessException dbe) {
+            throw new CustomException(ErrorType.DATABASE_ISSUES);
+        } catch (RuntimeException rte){
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        } catch (Exception e){
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
         }
-        return mClientRepository.findById(pClientId).get();
     }
 
     @Transactional
-    public Client createClient(Client pClient) {
+    public ClientDTO createClient(Client pClient) throws CustomException {
         try {
-            // Crear y asignar el carrito al cliente
-                Cart pCart = mCartService.createCart(pClient); pClient.setmClientCart(pCart);
-            // Asignar la fecha de creación del cliente
+            if (!mClientRepository.existsActiveByDoc(pClient.getmClientDocId())) {
+                throw new CustomException(ErrorType.CLIENT_DOC_ID_ALREADY_EXIST);
+            }
+                Cart pCart = mCartService.createCart(pClient);
+                pClient.setmClientCart(pCart);
                 pClient.setmClientCreationDate(LocalDateTime.now());
-            // Guardar el cliente (y el carrito debido a la relación)
-                return mClientRepository.save(pClient);
-            } catch (Exception e) { // Manejar excepciones si es necesario
-                throw new RuntimeException("Error creating client: " + e.getMessage(), e);
+
+                return ClientMapper.toDTO(mClientRepository.save(pClient));
+
+        } catch (CustomException ce) {
+            throw ce;
+        } catch (DataAccessException dbe) {
+            throw new CustomException(ErrorType.DATABASE_ISSUES);
+        } catch (RuntimeException rte){
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        } catch (Exception e){
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
         }
     }
 
+    @Transactional
+    public ClientDTO updateClient(Client pClient) throws CustomException {
+        try {
+            if(!mClientRepository.existsActiveById(pClient.getmClientId())) {
+                throw new CustomException(ErrorType.CLIENT_NOT_FOUND);            }
+            Client mClient = mClientRepository.findActiveById(pClient.getmClientId());
+
+            if(pClient.getmClientName()!=null){
+                mClient.setmClientName(pClient.getmClientName());
+            }
+            if(pClient.getmClientAddress()!=null){
+                mClient.setmClientAddress(pClient.getmClientAddress());
+            }
+            if(pClient.getmClientDocId()!=null){
+                if(mClientRepository.existsActiveByDoc(pClient.getmClientDocId())){
+                    throw new CustomException(ErrorType.CLIENT_DOC_ID_ALREADY_EXIST);
+                }
+                mClient.setmClientDocId(pClient.getmClientDocId());
+            }
+            if(pClient.getmIsActiveFlag()!=null){
+                mClient.setmIsActiveFlag(pClient.getmIsActiveFlag());
+            }
+
+            return ClientMapper.toDTO(mClientRepository.save(mClient));
+        } catch (CustomException ce) {
+            throw ce;
+        } catch (DataAccessException dbe) {
+            throw new CustomException(ErrorType.DATABASE_ISSUES);
+        } catch (RuntimeException rte){
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        } catch (Exception e){
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        }
+    }
+
+
+    public ClientDTO deleteClient(Long pClientId) throws CustomException {
+        try {
+            if (!mClientRepository.existsActiveById(pClientId)) {
+                throw new CustomException(ErrorType.CLIENT_NOT_FOUND);
+            }
+            Client mClient = new Client();
+            mClient.setmClientId(pClientId);
+            mClient.setmIsActiveFlag(false);
+            return this.updateClient(mClient);
+
+        } catch (CustomException ce) {
+            throw ce;
+        } catch (DataAccessException dbe) {
+            throw new CustomException(ErrorType.DATABASE_ISSUES);
+        } catch (RuntimeException rte){
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        } catch (Exception e){
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        }
+    }
 }

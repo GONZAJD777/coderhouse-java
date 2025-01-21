@@ -21,7 +21,7 @@ public class Client {
     @Column(name="client_address")
     private String mClientAddress;
 
-    @Column(name="client_doc_id" ,unique = true, nullable = false) //unico y no nulo
+    @Column(name="client_doc_id" ,unique = false, nullable = false) //unico y no nulo
     private Long mClientDocId;
 
     @Column(name="client_creation_date")
@@ -30,6 +30,10 @@ public class Client {
     @OneToOne( cascade = CascadeType.ALL)
     @JoinColumn(name = "client_cart_id", referencedColumnName = "cart_id")
     private Cart mClientCart;
+
+    @Column(name="client_is_active_flag",nullable = false)
+    private Boolean mIsActiveFlag;
+
 
     public Client() {
         super();
@@ -88,6 +92,14 @@ public class Client {
 
     public void setmClientCart(Cart pClientCart) {
         mClientCart = pClientCart;
+    }
+
+    public Boolean getmIsActiveFlag() {
+        return mIsActiveFlag;
+    }
+
+    public void setmIsActiveFlag(Boolean pIsActiveFlag) {
+        mIsActiveFlag = pIsActiveFlag;
     }
 
     @Override

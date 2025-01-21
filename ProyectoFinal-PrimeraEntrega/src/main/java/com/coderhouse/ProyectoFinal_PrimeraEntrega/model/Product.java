@@ -18,7 +18,7 @@ public class Product {
     private String mProductDescription;
     @Column(name="product_category")
     private String mProductCategory;
-    @Column(name="product_code", unique = true, nullable = false)
+    @Column(name="product_code", nullable = false)
     private String mProductCode;
     @Column(name="product_stock")
     private Integer mProductStock;
@@ -28,6 +28,9 @@ public class Product {
     private Float mProductTaxPercent;
     @Column(name="product_creation_date")
     private LocalDateTime mProductCreationDate;
+    @Column(name="product_is_active_flag",nullable = false)
+    private Boolean mIsActiveFlag;
+
 
     public Product() {
         super();
@@ -43,6 +46,7 @@ public class Product {
         this.mProductCreationDate=LocalDateTime.now();
         this.mProductStock=pProductStock;
         this.mProductCreationDate= LocalDateTime.now();
+        this.mIsActiveFlag=true;
     }
 
     public Long getmProductId() {
@@ -117,6 +121,14 @@ public class Product {
         mProductCreationDate = pProductCreationDate;
     }
 
+    public Boolean getmIsActiveFlag() {
+        return mIsActiveFlag;
+    }
+
+    public void setmIsActiveFlag(Boolean pIsActiveFlag) {
+        mIsActiveFlag = pIsActiveFlag;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -126,9 +138,10 @@ public class Product {
                 ", mProductCategory='" + mProductCategory + '\'' +
                 ", mProductCode='" + mProductCode + '\'' +
                 ", mProductStock=" + mProductStock +
-                ", mProductPrice='" + mProductPrice + '\'' +
-                ", mProductTaxPercent='" + mProductTaxPercent + '\'' +
+                ", mProductPrice=" + mProductPrice +
+                ", mProductTaxPercent=" + mProductTaxPercent +
                 ", mProductCreationDate=" + mProductCreationDate +
+                ", mIsActiveFlag=" + mIsActiveFlag +
                 '}';
     }
 }

@@ -26,10 +26,11 @@ public class ErrorHandler {
                  PRODUCT_OUT_OF_STOCK,
                  CLIENT_DOC_ID_ALREADY_EXIST,
                  TICKET_HAS_NO_ITEMS,
-                 PRODUCT_CODE_ALREADY_EXIST:
+                 PRODUCT_CODE_ALREADY_EXIST,
+                 PRODUCT_CODE_NOT_NULLABLE:
                 status = HttpStatus.BAD_REQUEST;
                 break;
-            case SYSTEM_ERROR:
+            case SYSTEM_ERROR,DATE_SERVICE_UNAVAILABLE,DATABASE_ISSUES:
                 status = HttpStatus.INTERNAL_SERVER_ERROR;
                 break;
             default:

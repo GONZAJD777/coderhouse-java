@@ -4,6 +4,7 @@ import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.client.ClientReducedDTO;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TicketDTO {
@@ -12,7 +13,7 @@ public class TicketDTO {
 
     private ClientReducedDTO mTicketClient;
 
-    private LocalDateTime mTicketCreationDate;
+    private Date mTicketCreationDate;
 
     private List<TicketItemDTO> mTicketDetail = new ArrayList<>();
 
@@ -34,11 +35,11 @@ public class TicketDTO {
         mTicketClient = pTicketClient;
     }
 
-    public LocalDateTime getmTicketCreationDate() {
+    public Date getmTicketCreationDate() {
         return mTicketCreationDate;
     }
 
-    public void setmTicketCreationDate(LocalDateTime pTicketCreationDate) {
+    public void setmTicketCreationDate(Date pTicketCreationDate) {
         mTicketCreationDate = pTicketCreationDate;
     }
 

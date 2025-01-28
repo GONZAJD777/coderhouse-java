@@ -1,6 +1,8 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.service;
 
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.DateTimeRestAPI;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.cart.CartDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.client.ClientDTO;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ticket.TicketDTO;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ticket.TicketExtendedDTO;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.exception.CustomException;
@@ -31,52 +33,66 @@ public class TicketService {
     private WorldDateService mWorldDateService;
     @Autowired
     private ProductService mProductService;
+    @Autowired
+    private ClientService mClientService;
 
 
-    private final String UTC_DATE_URL = "http://worldclockapi.com/api/json/utc/now";
-
-
-    public TicketService(TicketRepository pTicketRepository, ClientRepository pClientRepository, CartService mCartService, ProductService mProductService, RestTemplate mRestTemplate, WorldDateService mWorldDateService) {
+    public TicketService(TicketRepository pTicketRepository, ClientRepository pClientRepository, CartService mCartService, ProductService mProductService, RestTemplate mRestTemplate, WorldDateService mWorldDateService, ClientService mClientService) {
         this.mTicketRepository = pTicketRepository;
         this.mClientRepository = pClientRepository;
         this.mCartService = mCartService;
         this.mProductService = mProductService;
         this.mWorldDateService = mWorldDateService;
+        this.mClientService = mClientService;
     }
 
-    public List<TicketDTO> listAll() throws CustomException {
+    public List<Ticket> listAll() throws CustomException {
         try {
-            return TicketMapper.toDTO(mTicketRepository.findAll());
-        }catch (DataAccessException ex)
-        {
+            return mTicketRepository.findAll();
+        } catch (DataAccessException dbe) {
             throw new CustomException(ErrorType.DATABASE_ISSUES);
+        } catch (RuntimeException rte) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
         }
 
     }
 
-    public TicketDTO getTicketById(Long pTicketId) throws CustomException {
+    public Ticket getTicketById(Long pTicketId) throws CustomException {
         try {
             if(!mTicketRepository.existsById(pTicketId)) {
-                throw new CustomException(ErrorType.TICKET_NOT_FOUND);
+                throw new CustomException(ErrorType.TICKET_NOT_FOUND,ErrorType.TICKET_NOT_FOUND.getFormattedMessage(pTicketId));
             }
-            return TicketMapper.toDTO(mTicketRepository.findById(pTicketId).get());
-        } catch (DataAccessException ex)
-        {
+            return mTicketRepository.findById(pTicketId).get();
+        } catch (CustomException ce) {
+            throw ce;
+        } catch (DataAccessException dbe) {
             throw new CustomException(ErrorType.DATABASE_ISSUES);
+        } catch (RuntimeException rte) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
         }
 
     }
 
-    public List<TicketDTO> getTicketByClientId(Long pClientId) throws CustomException {
+    public List<Ticket> getTicketByClientId(Long pClientId) throws CustomException {
         try {
             if(!mClientRepository.existsById(pClientId)) {
-                throw new CustomException(ErrorType.CLIENT_NOT_FOUND);
+                throw new CustomException(ErrorType.CLIENT_NOT_FOUND,ErrorType.CLIENT_NOT_FOUND.getFormattedMessage(pClientId));
             }
             Client mClient = mClientRepository.findById(pClientId).get();
-            return TicketMapper.toDTO(mTicketRepository.findByMTicketClient(mClient));
-        } catch (DataAccessException ex)
-        {
+            return mTicketRepository.findByMTicketClient(mClient);
+
+        } catch (CustomException ce) {
+            throw ce;
+        } catch (DataAccessException dbe) {
             throw new CustomException(ErrorType.DATABASE_ISSUES);
+        } catch (RuntimeException rte) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
         }
     }
 
@@ -89,11 +105,7 @@ public class TicketService {
         TicketExtendedDTO mTicketExtendedDTO = new TicketExtendedDTO();
         try {
 
-            if(!mClientRepository.existsById(pClientId)) {
-                throw new CustomException(ErrorType.CLIENT_NOT_FOUND);
-            }
-
-            Client mClient = mClientRepository.findById(pClientId).get();
+            Client mClient = mClientService.getClient(pClientId);
             Cart mCart = mClient.getmClientCart();
             float mTicketTotalAmount = 0f; //variable que acumulara el total de la venta a medida q se recorre el carrito y se agregan los productos al ticket
 
@@ -119,7 +131,7 @@ public class TicketService {
 
                 Ticket mTicket = new Ticket();
                 mTicket.setmTicketClient(mClient);
-                mTicket.setmTicketCreationDate(this.getUTCDate(UTC_DATE_URL));
+                mTicket.setmTicketCreationDate(this.getUTCDate());
                 mTicket.setmTicketDetail(mTicketItemList);
                 mTicket.setmTicketTotal(mTicketTotalAmount);
 
@@ -134,7 +146,7 @@ public class TicketService {
                         //recuperamos el stock del producto vendido y le descotamos la cantidad de items
                     mAuxProduct.setmProductStock(mCartDetailItem.getmCartDetailProduct().getmProductStock()-mCartDetailItem.getmCartDetailItemQuantity());
 
-                    mCartService.updateCart(mCart.getmCartId()
+                    mCartService.addProductToCart(mCart.getmCartId()
                             ,mCartDetailItem.getmCartDetailProduct().getmProductId()
                             ,mCartDetailItem.getmCartDetailItemQuantity()*(-1) //se llama al servicio de carritos para agregar una cantidad negativa lo q removera el item
                     );
@@ -148,16 +160,21 @@ public class TicketService {
             }
         return  mTicketExtendedDTO;
 
-        } catch (DataAccessException ex)
-        {
+        } catch (CustomException ce) {
+            throw ce;
+        } catch (DataAccessException dbe) {
             throw new CustomException(ErrorType.DATABASE_ISSUES);
+        } catch (RuntimeException rte) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
         }
     }
 
-    private Date getUTCDate (String pURL) throws CustomException {
+    private Date getUTCDate () throws CustomException {
         DateTimeRestAPI mDateTimeRestAPI;
         try {
-            mDateTimeRestAPI = mWorldDateService.makeRequest(pURL);
+            mDateTimeRestAPI = mWorldDateService.makeRequest();
             assert mDateTimeRestAPI != null;
             System.out.println("Respuesta del servicio: "+mDateTimeRestAPI.toString());
             return mDateTimeRestAPI.getCurrentDateTime();
@@ -172,7 +189,6 @@ public class TicketService {
             //throw new CustomException(ErrorType.DATE_SERVICE_UNAVAILABLE);
         }
     }
-
 
     private TicketItem getTicketItem(CartDetail mCartDetailItem) {
         TicketItem mTicketItem = new TicketItem();

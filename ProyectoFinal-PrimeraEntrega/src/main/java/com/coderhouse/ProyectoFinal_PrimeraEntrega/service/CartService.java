@@ -1,69 +1,108 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.service;
 
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Cart;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.CartDetail;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Client;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Product;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.cart.CartDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.cart.CartReducedDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.client.ClientDTO;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.exception.CustomException;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.CartMapper;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.*;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.repository.CartDetailRepository;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.repository.CartRepository;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.repository.ProductRepository;
 import jakarta.transaction.Transactional;
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
 public class CartService {
 
-    @Autowired
+
     private CartRepository mCartRepository;
     @Autowired
     private ProductRepository mProductRepository;
     @Autowired
     private CartDetailRepository mCartDetailRepository;
+    @Autowired
+    private ProductService mProductService;
 
-    public CartService(CartRepository pCartRepository, ProductRepository mProductRepository, CartDetailRepository mCartDetailRepository) {
+
+
+    public CartService(CartRepository pCartRepository, ProductRepository mProductRepository, CartDetailRepository mCartDetailRepository, ProductService mProductService) {
         this.mCartRepository = pCartRepository;
         this.mProductRepository = mProductRepository;
         this.mCartDetailRepository = mCartDetailRepository;
+        this.mProductService = mProductService;
     }
 
+    public Cart createCart(Client pClient) throws CustomException {
+        try {
+            Cart cart = new Cart();
+            cart.setmCartCreationDate(LocalDateTime.now());
+            cart.setmCartClient(pClient);
 
-    public Cart createCart(Client pClient) {
-        Cart cart = new Cart();
-        cart.setmCartCreationDate(LocalDateTime.now());
-        cart.setmCartClient(pClient);
-        return cart;
-    }
-
-    public List<Cart> listAll() {
-        return mCartRepository.findAll();
-    }
-
-    public Cart getCart(Long pCartId) {
-        if(!mCartRepository.existsById(pCartId)) {
-            throw new RuntimeException("Cart not found with ID: " + pCartId);
+            return cart;
+        } catch (DataAccessException dbe) {
+            throw new CustomException(ErrorType.DATABASE_ISSUES);
+        } catch (RuntimeException rte) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
         }
-        return mCartRepository.findById(pCartId).get();
+
+    }
+
+    public List<Cart> listAll() throws CustomException {
+        try {
+            return mCartRepository.findAll();
+        }
+        catch (DataAccessException dbe) {
+            throw new CustomException(ErrorType.DATABASE_ISSUES);
+        } catch (RuntimeException rte) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        }
+    }
+
+    public Cart getCart(Long pCartId) throws CustomException {
+        try {
+            if (!mCartRepository.existsById(pCartId)) {
+                throw new CustomException(ErrorType.CART_NOT_FOUND,ErrorType.CART_NOT_FOUND.getFormattedMessage(pCartId));
+            }
+            return mCartRepository.findById(pCartId).get();
+        }
+        catch (CustomException ce) {
+            throw ce;
+        } catch (DataAccessException dbe) {
+            throw new CustomException(ErrorType.DATABASE_ISSUES);
+        } catch (RuntimeException rte) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        }
     }
 
     @Transactional
-    public Cart updateCart(Long pCartId, Long pProductId, int pItemQuantity) {
+    public Cart addProductToCart(Long pCartId, Long pProductId, int pItemQuantity) throws CustomException {
 
         try {
             if (!mCartRepository.existsById(pCartId)) {
-                throw new RuntimeException("Cart not found with ID: " + pCartId);
-            }
-            if (!mProductRepository.existsById(pProductId)) {
-                throw new RuntimeException("Product not found with ID: " + pProductId);
+                throw new CustomException(ErrorType.CART_NOT_FOUND,ErrorType.CART_NOT_FOUND.getFormattedMessage(pCartId));
             }
 
             Cart mCart = mCartRepository.findById(pCartId).get();
             List<CartDetail> mCartDetailList = mCart.getmCartDetailList();
-            Product mProduct = mProductRepository.findById(pProductId).get();
+            Product mProduct = mProductService.getProduct(pProductId);
             boolean mExistFlag = false;
             CartDetail itemToRemove = null;
 
@@ -98,11 +137,47 @@ public class CartService {
 
             return mCartRepository.save(mCart);
 
+        } catch (CustomException ce) {
+            throw ce;
+        } catch (DataAccessException dbe) {
+            throw new CustomException(ErrorType.DATABASE_ISSUES);
+        } catch (RuntimeException rte) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
         } catch (Exception e) {
-            throw new RuntimeException("Error adding product to cart: " + e.getMessage(), e);
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
         }
     }
 
+    @Transactional
+    public Cart updateCartDetailList(Long pCartId, Object pCartDetailList) throws CustomException {
+        try {
+
+            if (!(pCartDetailList instanceof List<?>)) {
+                throw new CustomException(ErrorType.CART_DETAIL_FORMAT_ERROR);
+            } else {
+
+                @SuppressWarnings("unchecked")
+                List<Map<String, Object>> mCartDetailListRaw = (List<Map<String, Object>>) pCartDetailList;
+                for (Map<String, Object> CartDetail : mCartDetailListRaw) {
 
 
+                    Long mCartDetailProduct = ((Number) CartDetail.get("producto")).longValue();
+                    int mCartDetailQuantity = (int) CartDetail.get("cantidad");
+                    this.addProductToCart(pCartId, mCartDetailProduct, mCartDetailQuantity);
+                }
+
+                return this.getCart(pCartId);
+            }
+
+        } catch (CustomException ce) {
+            throw ce;
+        } catch (DataAccessException dbe) {
+            throw new CustomException(ErrorType.DATABASE_ISSUES);
+        } catch (RuntimeException rte) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        }
+
+    }
 }

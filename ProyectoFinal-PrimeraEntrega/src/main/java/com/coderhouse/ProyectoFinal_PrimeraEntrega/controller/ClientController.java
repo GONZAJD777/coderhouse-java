@@ -35,28 +35,28 @@ public class ClientController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<ClientDTO>>> getAllClients() {
         try {
-            List<ClientDTO> mClientDTOList = mClientService.listAll();
+            List<ClientDTO> mClientDTOList = ClientMapper.toDTO(mClientService.listAll());
             ApiResponse<List<ClientDTO>> mApiResponse = new ApiResponse<>(true,"Listado de TODOS los clientes.",mClientDTOList,null);
             return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
 
         }catch (CustomException e) {
             return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
-                    body(new ApiResponse<>(false,ErrorHandler.getErrorMessage(e.getErrorType()),null,
-                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())));
+                    body(new ApiResponse<>(false,e.getCustomExceptionText(),null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.getErrorType().toString())));
         }
     }
 
     @GetMapping("/{pClientId}")
     public ResponseEntity<ApiResponse<ClientDTO>> getClientById(@PathVariable Long pClientId){
        try {
-           ClientDTO mClientDTO = mClientService.getClient(pClientId);
+           ClientDTO mClientDTO = ClientMapper.toDTO(mClientService.getClient(pClientId));
            ApiResponse<ClientDTO> mApiResponse = new ApiResponse<>(true,"Este es el cliente que buscabas",mClientDTO,null);
            return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
 
        }catch (CustomException e) {
            return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
-                   body(new ApiResponse<>(false,ErrorHandler.getErrorMessage(e.getErrorType()),null,
-                           List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())));
+                   body(new ApiResponse<>(false,e.getCustomExceptionText(),null,
+                           List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.getErrorType().toString())));
        }
     }
 
@@ -67,15 +67,15 @@ public class ClientController {
         System.out.println("Client Cart:" + pClient.getmClientCart());
         System.out.println("Client DocId:" + pClient.getmClientDocId());
         try {
-            ClientDTO mClientDTO = mClientService.createClient(pClient);
+            ClientDTO mClientDTO = ClientMapper.toDTO(mClientService.createClient(pClient));
             ApiResponse<ClientDTO> mApiResponse = new ApiResponse<>(true,"Se ha creado el cliente.",mClientDTO,null);
 
             return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
 
         }catch (CustomException e) {
             return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
-                    body(new ApiResponse<>(false,ErrorHandler.getErrorMessage(e.getErrorType()),null,
-                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())));
+                    body(new ApiResponse<>(false,e.getCustomExceptionText(),null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.getErrorType().toString())));
         }
     }
 
@@ -101,7 +101,7 @@ public class ClientController {
         }
 
         try {
-            ClientDTO mClientDTO = mClientService.updateClient(mClient);
+            ClientDTO mClientDTO = ClientMapper.toDTO(mClientService.updateClient(mClient));
             ApiResponse<ClientDTO> mApiResponse = new ApiResponse<>(true,"Se ha actualizado la informacion del cliente.",mClientDTO,null);
 
             return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
@@ -116,14 +116,14 @@ public class ClientController {
     @DeleteMapping("/{pClientId}")
     public ResponseEntity<ApiResponse<ClientDTO>> deleteClient(@PathVariable Long pClientId){
         try {
-            ClientDTO mClientDTO = mClientService.deleteClient(pClientId);
+            ClientDTO mClientDTO = ClientMapper.toDTO(mClientService.deleteClient(pClientId));
             ApiResponse<ClientDTO> mApiResponse = new ApiResponse<>(true,"Se ha eliminado el cliente.",mClientDTO,null);
 
             return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
         }catch (CustomException e) {
             return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
-                    body(new ApiResponse<>(false,ErrorHandler.getErrorMessage(e.getErrorType()),null,
-                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())));
+                    body(new ApiResponse<>(false,e.getCustomExceptionText(),null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.getErrorType().toString())));
         }
     }
 

@@ -11,7 +11,7 @@ public class CartDetailMapper {
     public static CartDetailDTO toDTO(CartDetail pCartDetail) {
 
             CartDetailDTO mCartDetailDTO = new CartDetailDTO();
-            mCartDetailDTO.setmCartDetailItemProduct(pCartDetail.getmCartDetailProduct());
+            mCartDetailDTO.setmCartDetailItemProduct(ProductMapper.toDTO(pCartDetail.getmCartDetailProduct()));
             mCartDetailDTO.setmCartDetailItemQuantity(pCartDetail.getmCartDetailItemQuantity());
             return mCartDetailDTO;
 

@@ -26,9 +26,9 @@ public class ProductService {
         this.mProductRepository = mProductRepository;
     }
 
-    public List<ProductDTO> listAll () throws CustomException {
+    public List<Product> listAll () throws CustomException {
         try {
-            return ProductMapper.toDTO(mProductRepository.findAllActiveProducts());
+            return mProductRepository.findAllActiveProducts();
         } catch (DataAccessException dbe) {
             throw new CustomException(ErrorType.DATABASE_ISSUES);
         } catch (RuntimeException rte){
@@ -38,12 +38,12 @@ public class ProductService {
         }
     }
 
-    public ProductDTO getProduct(Long pProductId) throws CustomException {
+    public Product getProduct(Long pProductId) throws CustomException {
        try {
            if (!mProductRepository.existsActiveById(pProductId)) {
-               throw new CustomException(ErrorType.PRODUCT_NOT_FOUND);
+               throw new CustomException(ErrorType.PRODUCT_NOT_FOUND,ErrorType.PRODUCT_NOT_FOUND.getFormattedMessage(pProductId));
            }
-           return ProductMapper.toDTO(mProductRepository.findActiveById(pProductId));
+           return mProductRepository.findActiveById(pProductId);
 
        } catch (CustomException ce) {
            throw ce;
@@ -57,17 +57,17 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDTO createProduct(Product pProduct) throws CustomException {
+    public Product createProduct(Product pProduct) throws CustomException {
         try {
             if(mProductRepository.existsActiveByCode(pProduct.getmProductCode())){
-                throw new CustomException(ErrorType.PRODUCT_CODE_ALREADY_EXIST);
+                throw new CustomException(ErrorType.PRODUCT_CODE_ALREADY_EXIST,ErrorType.PRODUCT_CODE_ALREADY_EXIST.getFormattedMessage(pProduct.getmProductCode()));
             }
             if(pProduct.getmProductCode()==null){
                 throw new CustomException(ErrorType.PRODUCT_CODE_NOT_NULLABLE);
             }
             pProduct.setmProductCreationDate(LocalDateTime.now());
             pProduct.setmIsActiveFlag(true);
-            return ProductMapper.toDTO(mProductRepository.save(pProduct));
+            return mProductRepository.save(pProduct);
         } catch (CustomException ce) {
             throw ce;
         } catch (DataAccessException dbe) {
@@ -80,10 +80,11 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDTO updateProduct(Product pProduct) throws CustomException {
+    public Product updateProduct(Product pProduct) throws CustomException {
         try {
             if(!mProductRepository.existsActiveById(pProduct.getmProductId())) {
-                throw new CustomException(ErrorType.PRODUCT_NOT_FOUND);            }
+                throw new CustomException(ErrorType.PRODUCT_NOT_FOUND,ErrorType.PRODUCT_NOT_FOUND.getFormattedMessage(pProduct.getmProductId()));
+            }
             Product mProduct = mProductRepository.findById(pProduct.getmProductId()).get();
 
             if(pProduct.getmProductName()!=null){
@@ -98,7 +99,7 @@ public class ProductService {
             if(pProduct.getmProductCode()!=null){
                 //se validara si el nuevo codigo del producto existe, de ser asi se interrumpe la actualizacion arrojando una exception
                 if(mProductRepository.existsActiveByCode(pProduct.getmProductCode())){
-                    throw new CustomException(ErrorType.PRODUCT_CODE_ALREADY_EXIST);
+                    throw new CustomException(ErrorType.PRODUCT_CODE_ALREADY_EXIST,ErrorType.PRODUCT_CODE_ALREADY_EXIST.getFormattedMessage(pProduct.getmProductCode()));
                 }
                 mProduct.setmProductCode(pProduct.getmProductCode());
             }
@@ -115,7 +116,7 @@ public class ProductService {
                 mProduct.setmIsActiveFlag(pProduct.getmIsActiveFlag());
             }
 
-            return ProductMapper.toDTO(mProductRepository.save(mProduct));
+            return mProductRepository.save(mProduct);
         } catch (CustomException ce) {
             throw ce;
         } catch (DataAccessException dbe) {
@@ -128,11 +129,11 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDTO deleteProduct(Long pProductId) throws CustomException {
+    public Product deleteProduct(Long pProductId) throws CustomException {
 
         try {
             if (!mProductRepository.existsActiveById(pProductId)) {
-                throw new CustomException(ErrorType.PRODUCT_NOT_FOUND);
+                throw new CustomException(ErrorType.PRODUCT_NOT_FOUND,ErrorType.PRODUCT_NOT_FOUND.getFormattedMessage(pProductId));
             }
             Product mProduct = new Product();
             mProduct.setmProductId(pProductId);

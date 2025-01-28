@@ -12,13 +12,15 @@ public class WorldDateService {
     @Autowired
     private final RestTemplate restTemplate;
 
+    private final String UTC_DATE_URL = "http://worldclockapi.com/api/json/utc/now";
+
 
     public WorldDateService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public DateTimeRestAPI makeRequest(String url) {
-        return restTemplate.exchange(url, HttpMethod.GET,null, DateTimeRestAPI.class).getBody();
+    public DateTimeRestAPI makeRequest() {
+        return restTemplate.exchange(UTC_DATE_URL, HttpMethod.GET,null, DateTimeRestAPI.class).getBody();
     }
 }
 

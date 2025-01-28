@@ -1,18 +1,19 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.cart;
 
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.product.ProductDTO;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Product;
 
 public class CartDetailDTO {
 
-        private Product mCartDetailItemProduct;
+        private ProductDTO mCartDetailItemProduct;
         private int mCartDetailItemQuantity;
 
 
-    public Product getmCartDetailItemProduct() {
+    public ProductDTO getmCartDetailItemProduct() {
         return mCartDetailItemProduct;
     }
 
-    public void setmCartDetailItemProduct(Product pCartDetailItemProduct) {
+    public void setmCartDetailItemProduct(ProductDTO pCartDetailItemProduct) {
         mCartDetailItemProduct = pCartDetailItemProduct;
     }
 

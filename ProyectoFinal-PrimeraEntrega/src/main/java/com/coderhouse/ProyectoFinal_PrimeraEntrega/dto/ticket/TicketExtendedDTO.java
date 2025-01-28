@@ -9,6 +9,7 @@ public class TicketExtendedDTO {
     private TicketDTO mTicket;
     private List<CartDetailDTO> notEnoughStockProducts;
 
+
     public TicketDTO getmTicket() {
         return mTicket;
     }

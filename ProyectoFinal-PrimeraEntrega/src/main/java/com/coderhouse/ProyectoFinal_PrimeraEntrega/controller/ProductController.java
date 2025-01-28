@@ -4,6 +4,7 @@ import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.product.ProductDTO;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ticket.TicketDTO;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.exception.CustomException;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.handler.ErrorHandler;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.ProductMapper;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Product;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.response.ApiResponse;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.ProductService;
@@ -31,28 +32,28 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProductDTO>>> getAllProducts() {
         try {
-            List<ProductDTO> mProductDTOList = mProductService.listAll();
+            List<ProductDTO> mProductDTOList = ProductMapper.toDTO(mProductService.listAll());
             ApiResponse<List<ProductDTO>> mApiResponse = new ApiResponse<>(true,"Listado de TODOS los productos",mProductDTOList,null);
 
             return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
         } catch (CustomException e) {
             return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
-                    body(new ApiResponse<>(false,ErrorHandler.getErrorMessage(e.getErrorType()),null,
-                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())));
+                    body(new ApiResponse<>(false,e.getCustomExceptionText(),null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.getErrorType().toString())));
         }
     }
 
     @GetMapping("/{pProductId}")
     public ResponseEntity<ApiResponse<ProductDTO>> getProductById(@PathVariable Long pProductId){
         try {
-            ProductDTO mProductDTO = mProductService.getProduct(pProductId);
+            ProductDTO mProductDTO = ProductMapper.toDTO(mProductService.getProduct(pProductId));
             ApiResponse<ProductDTO> mApiResponse = new ApiResponse<>(true,"Este es el producto que buscabas",mProductDTO,null);
 
             return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
         }catch (CustomException e) {
             return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
-                    body(new ApiResponse<>(false,ErrorHandler.getErrorMessage(e.getErrorType()),null,
-                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())));
+                    body(new ApiResponse<>(false,e.getCustomExceptionText(),null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.getErrorType().toString())));
         }
     }
 
@@ -67,13 +68,13 @@ public class ProductController {
         System.out.println("Client ProductTaxPercent:" + pProduct.getmProductTaxPercent());
 
         try {
-            ProductDTO mProductDTO = mProductService.createProduct(pProduct);
+            ProductDTO mProductDTO = ProductMapper.toDTO(mProductService.createProduct(pProduct));
             ApiResponse<ProductDTO> mApiResponse = new ApiResponse<>(true,"Se ha creado el producto correctamente",mProductDTO,null);
             return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
         }catch (CustomException e) {
             return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
-                    body(new ApiResponse<>(false,ErrorHandler.getErrorMessage(e.getErrorType()),null,
-                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())));
+                    body(new ApiResponse<>(false,e.getCustomExceptionText(),null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.getErrorType().toString())));
         }
     }
 
@@ -107,27 +108,27 @@ public class ProductController {
         }
 
         try {
-            ProductDTO mProductDTO = mProductService.updateProduct(mProduct);
+            ProductDTO mProductDTO = ProductMapper.toDTO(mProductService.updateProduct(mProduct));
             ApiResponse<ProductDTO> mApiResponse = new ApiResponse<>(true, "Se ha actualizado el producto correctamente", mProductDTO, null);
             return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
         } catch (CustomException e) {
-            return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType()))
-                    .body(new ApiResponse<>(false, ErrorHandler.getErrorMessage(e.getErrorType()), null,
-                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(), e.toString())));
+            return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
+                    body(new ApiResponse<>(false,e.getCustomExceptionText(),null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.getErrorType().toString())));
         }
     }
 
     @DeleteMapping("/{pProductId}")
     public ResponseEntity<ApiResponse<ProductDTO>> deleteProduct(@PathVariable Long pProductId){
         try {
-            ProductDTO mProductDTO = mProductService.deleteProduct(pProductId);
+            ProductDTO mProductDTO = ProductMapper.toDTO(mProductService.deleteProduct(pProductId));
             ApiResponse<ProductDTO> mApiResponse = new ApiResponse<>(true,"Se ha eliminado el producto.",mProductDTO,null);
 
             return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
         }catch (CustomException e) {
             return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
-                    body(new ApiResponse<>(false,ErrorHandler.getErrorMessage(e.getErrorType()),null,
-                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())));
+                    body(new ApiResponse<>(false,e.getCustomExceptionText(),null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.getErrorType().toString())));
         }
     }
 

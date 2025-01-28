@@ -59,9 +59,12 @@ public class SellingController {
                     }
                 }
             }
-
-            TicketExtendedDTO mTicketExtendedDTO = mTicketService.createTicket(mClientId);
-
+            TicketExtendedDTO mTicketExtendedDTO = new TicketExtendedDTO();
+            try {
+            mTicketExtendedDTO = mTicketService.createTicket(mClientId);
+            } catch (CustomException ce){
+                mApiResponse.addError(ce.getCustomExceptionText());
+            }
             mApiResponse.setMessage("El Ticket se genero correctamente.");
             mApiResponse.setData(mTicketExtendedDTO);
 
@@ -69,9 +72,10 @@ public class SellingController {
                 mApiResponse.setSuccess(false);
                 mApiResponse.setMessage("Ticket couldn't be generated, none of the items in the client's cart fulfill the requirements.");
             }
+            if (mTicketExtendedDTO.getNotEnoughStockProducts() !=null){
             if (!mTicketExtendedDTO.getNotEnoughStockProducts().isEmpty()) {
                 mApiResponse.addError("Some items could not be sold because there is not enough stock. See notEnoughStockProducts");
-            }
+            }}
 
             return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
         } catch (CustomException e) {

@@ -3,9 +3,11 @@ package com.coderhouse.ProyectoFinal_PrimeraEntrega.model;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 @Entity
+@Schema(description = "Cliente")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "mClientId")
 @Table(name="clients")
 public class Client {

@@ -110,7 +110,7 @@ public class TicketService {
             float mTicketTotalAmount = 0f; //variable que acumulara el total de la venta a medida q se recorre el carrito y se agregan los productos al ticket
 
             if(mCart.getmCartDetailList().isEmpty()) {
-                throw new CustomException(ErrorType.CART_IS_EMPTY);
+                throw new CustomException(ErrorType.CART_IS_EMPTY,ErrorType.CART_IS_EMPTY.getFormattedMessage(""));
             }
 
             for (CartDetail mCartDetailItem : mCart.getmCartDetailList()){

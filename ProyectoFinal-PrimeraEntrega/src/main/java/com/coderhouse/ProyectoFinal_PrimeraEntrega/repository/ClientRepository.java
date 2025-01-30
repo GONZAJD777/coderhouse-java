@@ -22,3 +22,4 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query("SELECT c FROM Client c WHERE c.mIsActiveFlag = true")
     List<Client> findAllActiveClients();
 }
+

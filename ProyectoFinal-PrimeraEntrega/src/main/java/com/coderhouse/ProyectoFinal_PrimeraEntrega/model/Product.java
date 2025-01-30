@@ -1,33 +1,54 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Schema(description = "Producto")
 @Table(name="products")
 public class Product {
 
     @Id // Primary Key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Autoincremental
+    @Schema(name="mProductId", description = "ID del Producto, autoincremental")
     @Column(name="product_id")
     private Long mProductId;
+
+    @Schema(name="mProductName", description = "Nombre del producto")
     @Column(name="product_name")
     private String mProductName;
+
+    @Schema(name="mProductDescription", description = "Descripcion del producto")
     @Column(name="product_description")
     private String mProductDescription;
+
+    @Schema(name="mProductCategory", description = "Categoria del producto")
     @Column(name="product_category")
     private String mProductCategory;
+
+    @Schema(name="mProductCode", description = "Codigo unico del producto")
     @Column(name="product_code", nullable = false)
     private String mProductCode;
+
+    @Schema(name="mProductStock", description = "Stock del producto")
     @Column(name="product_stock")
     private Integer mProductStock;
+
+    @Schema(name="mProductPrice", description = "Precio del producto")
     @Column(name="product_price")
     private Float mProductPrice;
+
+    @Schema(name="mProductTaxPercent", description = "Porcentaje de impuestos aplicado al producto")
     @Column(name="product_tax_percent")
     private Float mProductTaxPercent;
+
+    @Schema(name="mProductCreationDate", description = "Fecha de creacion del producto")
     @Column(name="product_creation_date")
     private LocalDateTime mProductCreationDate;
+
+    @Schema(name="mIsActiveFlag", description = "Flag que indica si el product esta activo, 'false' indica eliminacion")
     @Column(name="product_is_active_flag",nullable = false)
     private Boolean mIsActiveFlag;
 

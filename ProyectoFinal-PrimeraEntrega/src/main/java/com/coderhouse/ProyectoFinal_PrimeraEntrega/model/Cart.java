@@ -1,6 +1,7 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.model;
 
 import com.fasterxml.jackson.annotation.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -8,21 +9,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Schema(description = "Cart")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "mCartId")
 @Table(name="carts")
 public class Cart {
 
     @Id // Primary Key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Autoincremental
+    @Schema(name="mCartId", description = "ID del Carrito, autoincremental")
     @Column(name="cart_id")
     private Long mCartId;
 
+    @Schema(name="mCartClient", description = "Cliente al que pertenece el carrito")
     @OneToOne(mappedBy = "mClientCart")
     private Client mCartClient;
 
+    @Schema(name="mCartDetailList", description = "Listado de items que constituyen el detalle del carrito")
     @OneToMany(mappedBy = "mCartDetailCart", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<CartDetail> mCartDetailList=new ArrayList<>();
 
+    @Schema(name="mCartCreationDate", description = "Fecha de creacion del carrito, ")
     @Column(name="cart_creation_date")
     private LocalDateTime mCartCreationDate;
 

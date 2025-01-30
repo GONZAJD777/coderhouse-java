@@ -1,17 +1,29 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.product;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDateTime;
 
+@Schema(description = "ProductDTO excluye la flag IsActiveFlag de la informacion mostrada")
 public class ProductDTO {
+    @Schema(name="mProductId", description = "ID del Producto, autoincremental")
     private Long mProductId;
+    @Schema(name="mProductName", description = "Nombre del producto")
     private String mProductName;
+    @Schema(name="mProductDescription", description = "Descripcion del producto")
     private String mProductDescription;
+    @Schema(name="mProductCategory", description = "Categoria del producto")
     private String mProductCategory;
+    @Schema(name="mProductCode", description = "Codigo unico del producto")
     private String mProductCode;
+    @Schema(name="mProductStock", description = "Stock del producto")
     private Integer mProductStock;
+    @Schema(name="mProductPrice", description = "Precio del producto")
     private Float mProductPrice;
+    @Schema(name="mProductTaxPercent", description = "Porcentaje de impuestos aplicado al producto")
     private Float mProductTaxPercent;
+    @Schema(name="mProductCreationDate", description = "Fecha de creacion del producto")
     private LocalDateTime mProductCreationDate;
 
     public Long getmProductId() {

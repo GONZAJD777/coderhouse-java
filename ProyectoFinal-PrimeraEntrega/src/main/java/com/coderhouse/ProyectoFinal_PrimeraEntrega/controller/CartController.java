@@ -11,6 +11,8 @@ import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.ErrorType;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.response.ApiResponse;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.CartService;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.ClientService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.InternalServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/carts")
+@Tag(name = "Cart", description = "Este apartado contiene los endpoint para consultar y agregar productos a los carritos")
+
 public class CartController {
 
 
@@ -36,12 +40,13 @@ public class CartController {
         this.mCartService = pCartService;
         this.mClientService = mClientService;
     }
-
+    @Operation(summary = "Devuelve un listado de TODOS los tickets carritos)",
+            description = "Devuelve un listado de TODOS los tickets carritos que de clientes que no hayan sido borrados (IsActiveFlag=true en Cliente)")
     @GetMapping
     public ResponseEntity<ApiResponse<List<CartDTO>>> getAllCarts() {
         try {
             List<CartDTO> mCartDTOList = CartMapper.toDTO(mCartService.listAll());
-            ApiResponse<List<CartDTO>> mApiResponse = new ApiResponse<>(true,"Listado de TODOS los clientes.",mCartDTOList,null);
+            ApiResponse<List<CartDTO>> mApiResponse = new ApiResponse<>(true,"Listado de TODOS los carritos.",mCartDTOList,null);
             return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
 
         } catch (CustomException e) {
@@ -51,11 +56,13 @@ public class CartController {
         }
     }
 
+    @Operation(summary = "Devuelve la informacion del carrito pasado como parametro)",
+            description = "Devuelve la informacion del carrito pasado como parametro solo si corresponde a un cliente que no haya sido eliminado (IsActiveFlag=true en Cliente)")
     @GetMapping("/{pCartId}")
     public ResponseEntity<ApiResponse<CartDTO>> getCartById(@PathVariable Long pCartId){
         try {
             CartDTO mCartDTO = CartMapper.toDTO(mCartService.getCart(pCartId));
-            ApiResponse<CartDTO> mApiResponse = new ApiResponse<>(true,"Listado de TODOS los clientes.",mCartDTO,null);
+            ApiResponse<CartDTO> mApiResponse = new ApiResponse<>(true,"Este es el carrito que buscabas.",mCartDTO,null);
             return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
 
         } catch (CustomException e) {
@@ -65,6 +72,11 @@ public class CartController {
         }
     }
 
+    @Operation(summary = "Agrega o quitar un item del carrito pasado como parametro",
+            description = "Agregar un item al carrito pasado como parametro, el item agregado sera el indicado en el body por la cantidad especificada.<br>" +
+                    "Solo se agregara si el producto existe y esta activo (IsActiveFlag=true) al igual que el carrito.<br>" +
+                    "Si se introduce una cantidad negativa de productos intentara reducir la cantidad de dicho producto del carrito, siempre y cuando exista en el detalle.<br>" +
+                    "Si la cantidad resutlante es negativa, eliminara el item y si no existiera en el carrito informara el error.")
     @PutMapping("/{pCartId}")
     public ResponseEntity<ApiResponse<CartDTO>> addProductToCart(@PathVariable Long pCartId, @RequestBody Map<String, Object> pRequestBody) {
 
@@ -81,7 +93,7 @@ public class CartController {
 
 
            CartDTO mCartDTO = CartMapper.toDTO(mCartService.addProductToCart(pCartId,pProductId,pItemQuantity));
-           ApiResponse<CartDTO> mApiResponse = new ApiResponse<>(true,"Listado de TODOS los clientes.",mCartDTO,null);
+           ApiResponse<CartDTO> mApiResponse = new ApiResponse<>(true,"Se agregaron los productos al carrito.",mCartDTO,null);
            return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
        } catch (CustomException e) {
            return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
@@ -90,6 +102,10 @@ public class CartController {
        }
     }
 
+    @Operation(summary = "Modifica el detalle del carrito",
+            description = "Modificara los items del carrito agregando o quitando las unidades especificadas de cada producto, siempre y cuando estos esten activos al igual que el carrito.<br>" +
+                    "Si se introduce una cantidad negativa de productos intentara reducir la cantidad de dicho producto del carrito, siempre y cuando exista en el detalle.<br>" +
+                    "Si la cantidad resutlante es negativa, eliminara el item y si no existiera en el carrito informara el error.")
     @PostMapping("/llenarCarrito")
     public ResponseEntity<ApiResponse<CartReducedDTO>> updateCart(@RequestBody Map<String, Object> pRequestBody) {
         try {

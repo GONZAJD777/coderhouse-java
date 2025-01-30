@@ -1,12 +1,19 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Schema(description = "Respuesta de API")
 public class ApiResponse<T> {
+    @Schema(name="success", description = "Estado de la operacion ejecutada")
     private boolean success;
+    @Schema(name="message", description = "Respuesta decribiendo el resultado de la operacion")
     private String message;
+    @Schema(name="data", description = "Objeto con los datos resultado de la operacion (payload)")
     private T data;
+    @Schema(name="errors", description = "Listado de los errores ocurridos durante la operacion")
     private List<String> errors;
 
     public ApiResponse() {

@@ -29,6 +29,7 @@ public class ErrorHandler {
                  PRODUCT_CODE_ALREADY_EXIST,
                  PRODUCT_CODE_NOT_NULLABLE,
                  CART_DETAIL_FORMAT_ERROR,
+                 CART_ITEM_NOT_FOUND,
                  INPUT_ERROR:
                 status = HttpStatus.BAD_REQUEST;
                 break;

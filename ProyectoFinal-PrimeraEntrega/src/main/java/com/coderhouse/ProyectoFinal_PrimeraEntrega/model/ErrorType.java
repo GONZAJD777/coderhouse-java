@@ -16,6 +16,7 @@ public enum ErrorType {
     CART_NOT_FOUND("Carrito no encontrado con ID %s."),
     CART_IS_EMPTY("El carrito no tiene productos."),
     CART_DETAIL_FORMAT_ERROR("El listado de productos no tiene el formato adecuado."),
+    CART_ITEM_NOT_FOUND("El producto que estas intentando quitar no esta en el carrito, ID %s."),
 
     INPUT_ERROR ("Error al ingresar el valor %s, verifica los nombres y valores de los atributos"),
     DATABASE_ISSUES("Error al intentar acceder a la base de datos."),

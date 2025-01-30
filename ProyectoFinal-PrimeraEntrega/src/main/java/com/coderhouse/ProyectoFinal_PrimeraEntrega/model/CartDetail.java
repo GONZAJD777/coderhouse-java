@@ -1,25 +1,31 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.model;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 @Entity
+@Schema(description = "CartDetail")
 @Table(name="carts_detail")
 public class CartDetail {
 
     @Id // Primary Key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Autoincremental
+    @Schema(name="mCartDetailId", description = "ID del item detalle de Carrito, autoincremental")
     @Column(name="cart_detail_id")
     private Long mCartDetailId;
 
+    @Schema(name="mCartDetailCart", description = "Carrito al que pertenece el item detalle de carrito")
     @ManyToOne
     @JoinColumn(name = "cart_detail_cart_id", referencedColumnName = "cart_id")
     private Cart mCartDetailCart;
 
+    @Schema(name="mCartDetailProduct", description = "Producto que constituye el detalle del carrito")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cart_detail_product_id", referencedColumnName = "product_id")
     private Product mCartDetailProduct;
 
+    @Schema(name="mCartDetailItemQuantity", description = "Cantidad de unidades de Producto que constituye el detalle del carrito")
     @Column(name="cart_detail_item_quantity")
     private int mCartDetailItemQuantity;
 

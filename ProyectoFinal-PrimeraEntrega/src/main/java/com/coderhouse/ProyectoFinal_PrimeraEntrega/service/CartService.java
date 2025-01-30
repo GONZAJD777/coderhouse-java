@@ -29,17 +29,13 @@ public class CartService {
 
     private CartRepository mCartRepository;
     @Autowired
-    private ProductRepository mProductRepository;
-    @Autowired
     private CartDetailRepository mCartDetailRepository;
     @Autowired
     private ProductService mProductService;
 
 
-
-    public CartService(CartRepository pCartRepository, ProductRepository mProductRepository, CartDetailRepository mCartDetailRepository, ProductService mProductService) {
+    public CartService(CartRepository pCartRepository, CartDetailRepository mCartDetailRepository, ProductService mProductService) {
         this.mCartRepository = pCartRepository;
-        this.mProductRepository = mProductRepository;
         this.mCartDetailRepository = mCartDetailRepository;
         this.mProductService = mProductService;
     }
@@ -63,7 +59,7 @@ public class CartService {
 
     public List<Cart> listAll() throws CustomException {
         try {
-            return mCartRepository.findAll();
+            return mCartRepository.findAllActiveCarts();
         }
         catch (DataAccessException dbe) {
             throw new CustomException(ErrorType.DATABASE_ISSUES);
@@ -76,10 +72,11 @@ public class CartService {
 
     public Cart getCart(Long pCartId) throws CustomException {
         try {
-            if (!mCartRepository.existsById(pCartId)) {
+            if (!mCartRepository.existsActiveCartById(pCartId)) {
                 throw new CustomException(ErrorType.CART_NOT_FOUND,ErrorType.CART_NOT_FOUND.getFormattedMessage(pCartId));
             }
-            return mCartRepository.findById(pCartId).get();
+
+            return mCartRepository.findActiveCartById(pCartId);
         }
         catch (CustomException ce) {
             throw ce;
@@ -96,11 +93,12 @@ public class CartService {
     public Cart addProductToCart(Long pCartId, Long pProductId, int pItemQuantity) throws CustomException {
 
         try {
-            if (!mCartRepository.existsById(pCartId)) {
+            if (!mCartRepository.existsActiveCartById(pCartId)) {
                 throw new CustomException(ErrorType.CART_NOT_FOUND,ErrorType.CART_NOT_FOUND.getFormattedMessage(pCartId));
             }
 
-            Cart mCart = mCartRepository.findById(pCartId).get();
+
+            Cart mCart = mCartRepository.findActiveCartById(pCartId);
             List<CartDetail> mCartDetailList = mCart.getmCartDetailList();
             Product mProduct = mProductService.getProduct(pProductId);
             boolean mExistFlag = false;
@@ -130,7 +128,7 @@ public class CartService {
                 mCartDetail.setmCartDetailCart(mCart);
                 mCartDetailList.add(mCartDetail);
             } else if (!mExistFlag) {
-                throw new RuntimeException("Product " + pProductId + " is not in the cart, you can't remove it.");
+                throw new CustomException(ErrorType.CART_ITEM_NOT_FOUND,ErrorType.CART_ITEM_NOT_FOUND.getFormattedMessage(pProductId));
             }
 
             mCart.setmCartDetailList(mCartDetailList);
@@ -153,7 +151,7 @@ public class CartService {
         try {
 
             if (!(pCartDetailList instanceof List<?>)) {
-                throw new CustomException(ErrorType.CART_DETAIL_FORMAT_ERROR);
+                throw new CustomException(ErrorType.CART_DETAIL_FORMAT_ERROR,ErrorType.CART_DETAIL_FORMAT_ERROR.getFormattedMessage());
             } else {
 
                 @SuppressWarnings("unchecked")

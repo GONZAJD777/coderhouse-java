@@ -8,6 +8,8 @@ import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.ProductMapper;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Product;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.response.ApiResponse;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.InternalServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@Tag(name = "Products", description = "Este apartado contiene los endpoint para consultar, crear ,modificar y eliminar Productos")
 @RequestMapping("/api/products")
 public class ProductController {
 
@@ -29,6 +32,8 @@ public class ProductController {
         this.mProductService = mProductService;
     }
 
+    @Operation(summary = "Devuelve un listado de TODOS los Productos",
+            description = "Devuelve un listado de TODOS los Productos que no hayan sido borrados (IsActiveFlag=true)")
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProductDTO>>> getAllProducts() {
         try {
@@ -43,6 +48,8 @@ public class ProductController {
         }
     }
 
+    @Operation(summary = "Devuelve un listado la informacion del Producto pasado como parametro",
+            description = "Devuelve un listado la informacion del Producto pasado como parametro y cuando no hayan sido eliminado (IsActiveFlag=true)")
     @GetMapping("/{pProductId}")
     public ResponseEntity<ApiResponse<ProductDTO>> getProductById(@PathVariable Long pProductId){
         try {
@@ -57,6 +64,8 @@ public class ProductController {
         }
     }
 
+    @Operation(summary = "Crea un Producto con la informacion provista",
+            description = "Crea un Producto con la informacion provista.")
     @PostMapping
     public ResponseEntity<ApiResponse<ProductDTO>> createProduct(@RequestBody Product pProduct) {
         System.out.println("Client ProductId:" + pProduct.getmProductId());
@@ -78,6 +87,10 @@ public class ProductController {
         }
     }
 
+    @Operation(summary = "Actualiza la informacion del Producto",
+            description = "Actualiza la informacion del Producto siempre y cuando no haya sido borrado.<br>" +
+                    "No es posible actualizar la flag de baja o borrado logico.<>" +
+                    "El codigo de Producto no puede coincidir con ningun otro cliente en la base de datos, incluido el Producto que se intenta modificar.")
     @PutMapping("/{pProductId}")
     public ResponseEntity<ApiResponse<ProductDTO>> updateProduct(@PathVariable Long pProductId, @RequestBody Map<String, Object> pRequestBody) {
         Product mProduct = new Product();
@@ -118,6 +131,11 @@ public class ProductController {
         }
     }
 
+    @Operation(summary = "Elimina la informacion del Producto",
+            description = "Este endpoint realiza la baja o eliminacion LOGICA del Producto mediante la flag IsActiveFlag=false (Eliminado).<br>" +
+                    "Los Productos eliminados, no pueden volver a ser activados con los endpoints y medios disponibles tradicionales.<br>" +
+                    "La informacion de los Producto continua disponible para los carritos que aun tengan el producto pero no podran ser facturados.<br>" +
+                    "Esta situacion sera informada cuando se intente vender de un carrito un producto que ya no existe en la base de datos.")
     @DeleteMapping("/{pProductId}")
     public ResponseEntity<ApiResponse<ProductDTO>> deleteProduct(@PathVariable Long pProductId){
         try {

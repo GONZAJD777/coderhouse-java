@@ -13,6 +13,8 @@ import com.coderhouse.ProyectoFinal_PrimeraEntrega.response.ApiResponse;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.CartService;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.ClientService;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.TicketService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@Tag(name = "Selling", description = "Este apartado contiene el endpoint para la VENTA de productos")
+
 @RequestMapping("/api/ventas")
 public class SellingController {
 
@@ -32,7 +36,9 @@ public class SellingController {
     @Autowired
     ClientService mClientService;
 
-
+    @Operation(summary = "Endpoint de Venta de productos",
+            description = "Este endpoint toma el request con el formato especificado y sirviendose de la logica y validaciones de CartService y TicketServive, agrega los productos al carrito y luego genera el comprobante para la venta, realizando validaciones sobre Cliente, Producto, reduciendo Stock, registrando errores que puedan surgir e informando en la respuesta el resultado.<br>" +
+                    "Como se menciono hace uso de servicios los cuales incluyes validaciones encapsuladas de cada entidad interviniente en el proceso, por lo que ante un error en la logica de negocio se registrara el error en al respuesta.")
     @PostMapping
     public ResponseEntity<ApiResponse<TicketExtendedDTO>> createSale(@RequestBody Map<String, Object> pRequestBody) {
         try {

@@ -8,6 +8,8 @@ import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.ClientMapper;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Client;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.response.ApiResponse;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.ClientService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.InternalServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import java.util.Map;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
+@Tag(name = "Client", description = "Este apartado contiene los endpoint para consultar, crear ,modificar y eliminar Clientes")
 @RequestMapping("/api/clients")
 public class ClientController {
 
@@ -32,6 +35,8 @@ public class ClientController {
         this.mClientService = pClientService;
     }
 
+    @Operation(summary = "Devuelve un listado de TODOS los Clientes",
+            description = "Devuelve un listado de TODOS los Clientes que no hayan sido borrados (IsActiveFlag=true en Cliente)")
     @GetMapping
     public ResponseEntity<ApiResponse<List<ClientDTO>>> getAllClients() {
         try {
@@ -46,6 +51,8 @@ public class ClientController {
         }
     }
 
+    @Operation(summary = "Devuelve un listado la informacion del cliente pasado como parametro",
+            description = "Devuelve un listado la informacion del cliente pasado como parametro siempre y cuando no hayan sido eliminado (IsActiveFlag=true en Cliente)")
     @GetMapping("/{pClientId}")
     public ResponseEntity<ApiResponse<ClientDTO>> getClientById(@PathVariable Long pClientId){
        try {
@@ -60,6 +67,8 @@ public class ClientController {
        }
     }
 
+    @Operation(summary = "Crea un cliente con la informacion provista",
+            description = "Crea un cliente con la informacion provista.")
     @PostMapping
     public ResponseEntity<ApiResponse<ClientDTO>> createClient(@RequestBody Client pClient) {
         System.out.println("Client Name:" + pClient.getmClientName());
@@ -79,6 +88,10 @@ public class ClientController {
         }
     }
 
+    @Operation(summary = "Actualiza la informacion del cliente",
+            description = "Actualiza la informacion del cliente siempre y cuando no haya sido borrado.<br>" +
+                    "No es posible actualizar la flag de baja o borrado logico.<>" +
+                    "El documento introducido no puede coincidir con ningun otro cliente en la base de datos, incluido el cliente que se intenta modificar.")
     @PutMapping("/{pClientId}")
     public ResponseEntity<ApiResponse<ClientDTO>> updateClient(@PathVariable Long pClientId, @RequestBody Map<String, Object> pRequestBody) {
 
@@ -113,6 +126,10 @@ public class ClientController {
         }
     }
 
+    @Operation(summary = "Elimina la informacion del cliente",
+            description = "Este endpoint realiza la baja o eliminacion LOGICA del cliente mediante la flag IsActiveFlag=false (Eliminado).<br>" +
+                    "Los clientes eliminados, no pueden volver a ser activados con los endpoints y medios disponibles tradicionales.<br>" +
+                    "La informacion de los clientes continua disponible para los Tickets aun despues de eliminados.")
     @DeleteMapping("/{pClientId}")
     public ResponseEntity<ApiResponse<ClientDTO>> deleteClient(@PathVariable Long pClientId){
         try {

@@ -24,9 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/carts")
 @Tag(name = "Cart", description = "Este apartado contiene los endpoint para consultar y agregar productos a los carritos")
-
+@RequestMapping("/api/carts")
 public class CartController {
 
 

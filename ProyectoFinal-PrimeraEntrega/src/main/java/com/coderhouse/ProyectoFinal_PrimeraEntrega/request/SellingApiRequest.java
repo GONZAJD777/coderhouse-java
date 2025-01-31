@@ -11,7 +11,7 @@ public class SellingApiRequest {
     @Schema(description = "ID del cliente", example = "25")
     private Long cliente;
 
-    @Schema(description = "Detalle del carrito")
+    @Schema(description = "Detalle del carrito", example = "[{\"producto\": 1, \"cantidad\": 6}, {\"producto\": 2, \"cantidad\": 2}, {\"producto\": 3, \"cantidad\": 1}]")
     private List<ItemDetalleCarrito> detalleCarrito;
 
     public SellingApiRequest() {}

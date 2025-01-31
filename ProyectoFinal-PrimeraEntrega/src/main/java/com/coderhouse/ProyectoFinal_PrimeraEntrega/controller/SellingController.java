@@ -40,7 +40,7 @@ public class SellingController {
     @Operation(summary = "Endpoint de Venta de productos"
             ,description = "Este endpoint toma el request con el formato especificado y sirviendose de la logica y validaciones de CartService y TicketServive, agrega los productos al carrito y luego genera el comprobante para la venta, realizando validaciones sobre Cliente, Producto, reduciendo Stock, registrando errores que puedan surgir e informando en la respuesta el resultado.<br>" +
                     "Como se menciono hace uso de servicios los cuales incluyes validaciones encapsuladas de cada entidad interviniente en el proceso, por lo que ante un error en la logica de negocio se registrara el error en al respuesta.<br>" +
-                    "Esta operacion pisara cualquier item que el cliente tenga el carrito, con lo seteado en el request."
+                    "<H2>Esta operacion pisara cualquier item que el cliente tenga el carrito con lo seteado en el request.</H2>"
             ,requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(  content = @Content( schema = @Schema(implementation = SellingApiRequest.class)  ) )
             ,responses = {
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),

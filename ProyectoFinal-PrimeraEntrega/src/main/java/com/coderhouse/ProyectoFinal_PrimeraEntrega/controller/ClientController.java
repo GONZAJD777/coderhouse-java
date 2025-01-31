@@ -40,7 +40,12 @@ public class ClientController {
     }
 
     @Operation(summary = "Devuelve un listado de TODOS los Clientes",
-            description = "Devuelve un listado de TODOS los Clientes que no hayan sido borrados (IsActiveFlag=true en Cliente)")
+            description = "Devuelve un listado de TODOS los Clientes que no hayan sido borrados (IsActiveFlag=true en Cliente)"
+            ,responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     @GetMapping
     public ResponseEntity<ApiResponse<List<ClientDTO>>> getAllClients() {
         try {
@@ -56,7 +61,11 @@ public class ClientController {
     }
 
     @Operation(summary = "Devuelve un listado la informacion del cliente pasado como parametro",
-            description = "Devuelve un listado la informacion del cliente pasado como parametro siempre y cuando no hayan sido eliminado (IsActiveFlag=true en Cliente)")
+            description = "Devuelve un listado la informacion del cliente pasado como parametro siempre y cuando no hayan sido eliminado (IsActiveFlag=true en Cliente)",responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     @GetMapping("/{pClientId}")
     public ResponseEntity<ApiResponse<ClientDTO>> getClientById(@PathVariable Long pClientId){
        try {
@@ -144,7 +153,11 @@ public class ClientController {
     @Operation(summary = "Elimina la informacion del cliente",
             description = "Este endpoint realiza la baja o eliminacion LOGICA del cliente mediante la flag IsActiveFlag=false (Eliminado).<br>" +
                     "Los clientes eliminados, no pueden volver a ser activados con los endpoints y medios disponibles tradicionales.<br>" +
-                    "La informacion de los clientes continua disponible para los Tickets aun despues de eliminados.")
+                    "La informacion de los clientes continua disponible para los Tickets aun despues de eliminados.",responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     @DeleteMapping("/{pClientId}")
     public ResponseEntity<ApiResponse<ClientDTO>> deleteClient(@PathVariable Long pClientId){
         try {

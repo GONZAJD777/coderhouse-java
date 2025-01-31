@@ -37,7 +37,11 @@ public class ProductController {
     }
 
     @Operation(summary = "Devuelve un listado de TODOS los Productos",
-            description = "Devuelve un listado de TODOS los Productos que no hayan sido borrados (IsActiveFlag=true)")
+            description = "Devuelve un listado de TODOS los Productos que no hayan sido borrados (IsActiveFlag=true)",responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProductDTO>>> getAllProducts() {
         try {
@@ -53,7 +57,11 @@ public class ProductController {
     }
 
     @Operation(summary = "Devuelve un listado la informacion del Producto pasado como parametro",
-            description = "Devuelve un listado la informacion del Producto pasado como parametro y cuando no hayan sido eliminado (IsActiveFlag=true)")
+            description = "Devuelve un listado la informacion del Producto pasado como parametro y cuando no hayan sido eliminado (IsActiveFlag=true)",responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     @GetMapping("/{pProductId}")
     public ResponseEntity<ApiResponse<ProductDTO>> getProductById(@PathVariable Long pProductId){
         try {
@@ -161,7 +169,11 @@ public class ProductController {
             description = "Este endpoint realiza la baja o eliminacion LOGICA del Producto mediante la flag IsActiveFlag=false (Eliminado).<br>" +
                     "Los Productos eliminados, no pueden volver a ser activados con los endpoints y medios disponibles tradicionales.<br>" +
                     "La informacion de los Producto continua disponible para los carritos que aun tengan el producto pero no podran ser facturados.<br>" +
-                    "Esta situacion sera informada cuando se intente vender de un carrito un producto que ya no existe en la base de datos.")
+                    "Esta situacion sera informada cuando se intente vender de un carrito un producto que ya no existe en la base de datos.",responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     @DeleteMapping("/{pProductId}")
     public ResponseEntity<ApiResponse<ProductDTO>> deleteProduct(@PathVariable Long pProductId){
         try {

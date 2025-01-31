@@ -114,6 +114,7 @@ public class TicketService {
             }
 
             for (CartDetail mCartDetailItem : mCart.getmCartDetailList()){
+
                 if(mCartDetailItem.getmCartDetailItemQuantity()<=mCartDetailItem.getmCartDetailProduct().getmProductStock()){
                     TicketItem mTicketItem = getTicketItem(mCartDetailItem);
                     mTicketTotalAmount = mTicketTotalAmount + mTicketItem.getmTicketItemSubTotal();

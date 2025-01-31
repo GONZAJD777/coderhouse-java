@@ -34,7 +34,11 @@ public class TicketController {
     }
 
     @GetMapping
-    @Operation(summary = "Devuelve un listado de TODOS los tickets generados hasta el momento", description = "Descripción del endpoint de ejemplo")
+    @Operation(summary = "Devuelve un listado de TODOS los tickets generados hasta el momento", description = "Descripción del endpoint de ejemplo",responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     public ResponseEntity<ApiResponse<List<TicketDTO>>> getAllTickets() {
         try {
             List<TicketDTO> mTicketList = TicketMapper.toDTO(mTicketService.listAll());
@@ -48,7 +52,11 @@ public class TicketController {
     }
 
     @GetMapping("/{pTicketId}")
-    @Operation(summary = "Devuelve la informacion del ticket especificado como parametro", description = "Descripción del endpoint de ejemplo")
+    @Operation(summary = "Devuelve la informacion del ticket especificado como parametro", description = "Descripción del endpoint de ejemplo",responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     public ResponseEntity<ApiResponse<TicketDTO>> getTicketById(@PathVariable Long pTicketId){
         try {
             TicketDTO mTicketDTO = TicketMapper.toDTO(mTicketService.getTicketById(pTicketId));
@@ -62,11 +70,14 @@ public class TicketController {
         }
     }
 
-
     @GetMapping("/clients/{pClientId}")
     @Operation(summary = "Devuelve un listado de TODOS los tickets generados hasta el momento para el cliente especificado como parametro",
             description = "Devuelve un listado de TODOS los tickets generados hasta el momento para el cliente especificado como parametro.<br>"+
-                          "Los comprobantes y su informacion no deben ser borrados, por lo que aun cuando un cliente haya sido eliminado, se podra consultar los mismos buscando por su ID.")
+                          "Los comprobantes y su informacion no deben ser borrados, por lo que aun cuando un cliente haya sido eliminado, se podra consultar los mismos buscando por su ID.",responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     public ResponseEntity<ApiResponse<List<TicketDTO>>> getTicketByClientId(@PathVariable Long pClientId){
         try {
             List<TicketDTO> mTicketList = TicketMapper.toDTO(mTicketService.getTicketByClientId(pClientId));
@@ -85,7 +96,11 @@ public class TicketController {
             description = "Genera el ticket para la compra de los productos del carrito del cliente especificado como parametro.<br>"+
                           "Si el cliente no tiene productos en su carrito devolvera error informando la situacion.<br>" +
                           "Si no hay suficiente stock de alguno de los productos del carrito del cliente, se informara en la respuesta.<br>"+
-                          "No sera posible generar un ticket a un cliente que ha sido eliminado.")
+                          "No sera posible generar un ticket a un cliente que ha sido eliminado.",responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     public ResponseEntity<ApiResponse<TicketExtendedDTO>> createTicket(@PathVariable Long pClientId) {
         try {
 

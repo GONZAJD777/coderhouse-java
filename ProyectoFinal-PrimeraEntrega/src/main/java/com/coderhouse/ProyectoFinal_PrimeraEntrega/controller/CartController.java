@@ -8,10 +8,13 @@ import com.coderhouse.ProyectoFinal_PrimeraEntrega.handler.ErrorHandler;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.CartMapper;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Client;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.ErrorType;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.request.SellingApiRequest;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.response.ApiResponse;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.CartService;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.InternalServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +43,12 @@ public class CartController {
         this.mClientService = mClientService;
     }
     @Operation(summary = "Devuelve un listado de TODOS los tickets carritos)",
-            description = "Devuelve un listado de TODOS los tickets carritos que de clientes que no hayan sido borrados (IsActiveFlag=true en Cliente)")
+            description = "Devuelve un listado de TODOS los tickets carritos que de clientes que no hayan sido borrados (IsActiveFlag=true en Cliente)"
+            ,responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     @GetMapping
     public ResponseEntity<ApiResponse<List<CartDTO>>> getAllCarts() {
         try {
@@ -56,7 +64,12 @@ public class CartController {
     }
 
     @Operation(summary = "Devuelve la informacion del carrito pasado como parametro)",
-            description = "Devuelve la informacion del carrito pasado como parametro solo si corresponde a un cliente que no haya sido eliminado (IsActiveFlag=true en Cliente)")
+            description = "Devuelve la informacion del carrito pasado como parametro solo si corresponde a un cliente que no haya sido eliminado (IsActiveFlag=true en Cliente)"
+            ,responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     @GetMapping("/{pCartId}")
     public ResponseEntity<ApiResponse<CartDTO>> getCartById(@PathVariable Long pCartId){
         try {
@@ -75,24 +88,30 @@ public class CartController {
             description = "Agregar un item al carrito pasado como parametro, el item agregado sera el indicado en el body por la cantidad especificada.<br>" +
                     "Solo se agregara si el producto existe y esta activo (IsActiveFlag=true) al igual que el carrito.<br>" +
                     "Si se introduce una cantidad negativa de productos intentara reducir la cantidad de dicho producto del carrito, siempre y cuando exista en el detalle.<br>" +
-                    "Si la cantidad resutlante es negativa, eliminara el item y si no existiera en el carrito informara el error.")
+                    "Si la cantidad resutlante es negativa, eliminara el item y si no existiera en el carrito informara el error."
+            ,requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(  content = @Content( schema = @Schema(implementation = SellingApiRequest.ItemDetalleCarrito.class)  ) )
+            ,responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     @PutMapping("/{pCartId}")
     public ResponseEntity<ApiResponse<CartDTO>> addProductToCart(@PathVariable Long pCartId, @RequestBody Map<String, Object> pRequestBody) {
 
        try {
-           if (pRequestBody.get("mCartDetailProduct") == null) {
-               throw new CustomException(ErrorType.INPUT_ERROR, ErrorType.INPUT_ERROR.getFormattedMessage("mCartDetailProduct"));
+           if (pRequestBody.get("producto") == null) {
+               throw new CustomException(ErrorType.INPUT_ERROR, ErrorType.INPUT_ERROR.getFormattedMessage("producto"));
            }
-           if (pRequestBody.get("mCartDetailQuantity") == null) {
-               throw new CustomException(ErrorType.INPUT_ERROR, ErrorType.INPUT_ERROR.getFormattedMessage("mCartDetailQuantity"));
+           if (pRequestBody.get("cantidad") == null) {
+               throw new CustomException(ErrorType.INPUT_ERROR, ErrorType.INPUT_ERROR.getFormattedMessage("cantidad"));
            }
 
-           Long pProductId = ((Number) pRequestBody.get("mCartDetailProduct")).longValue();
-           int pItemQuantity = (int) pRequestBody.get("mCartDetailQuantity");
+           Long pProductId = ((Number) pRequestBody.get("producto")).longValue();
+           int pItemQuantity = (int) pRequestBody.get("cantidad");
 
 
            CartDTO mCartDTO = CartMapper.toDTO(mCartService.addProductToCart(pCartId,pProductId,pItemQuantity));
-           ApiResponse<CartDTO> mApiResponse = new ApiResponse<>(true,"Se agregaron los productos al carrito.",mCartDTO,null);
+           ApiResponse<CartDTO> mApiResponse = new ApiResponse<>(true,"Se modifico la cantidad de items del carrito.",mCartDTO,null);
            return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
        } catch (CustomException e) {
            return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
@@ -104,7 +123,13 @@ public class CartController {
     @Operation(summary = "Modifica el detalle del carrito",
             description = "Modificara los items del carrito agregando o quitando las unidades especificadas de cada producto, siempre y cuando estos esten activos al igual que el carrito.<br>" +
                     "Si se introduce una cantidad negativa de productos intentara reducir la cantidad de dicho producto del carrito, siempre y cuando exista en el detalle.<br>" +
-                    "Si la cantidad resutlante es negativa, eliminara el item y si no existiera en el carrito informara el error.")
+                    "Si la cantidad resutlante es negativa, eliminara el item y si no existiera en el carrito informara el error."
+            ,requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(  content = @Content( schema = @Schema(implementation = SellingApiRequest.class)  ) )
+            ,responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     @PostMapping("/llenarCarrito")
     public ResponseEntity<ApiResponse<CartReducedDTO>> updateCart(@RequestBody Map<String, Object> pRequestBody) {
         try {
@@ -131,10 +156,10 @@ public class CartController {
                     }
                 }
             }
-            if (mCartDTO.getmCartDetailList().isEmpty()){
+            if (mCartDTO.getmCartDetailList()==null || mCartDTO.getmCartDetailList().isEmpty()){
                 mApiResponse.setSuccess(false);
                 mApiResponse.setMessage("Parece que no se pudieron agregar productos al carrito.");
-                mApiResponse.setData(mCartDTO);
+                mApiResponse.setData(CartMapper.toReducedDTO(mCartService.getCart(mClient.getmClientCart().getmCartId())));
             } else {
                 mApiResponse.setSuccess(true);
                 mApiResponse.setMessage("El carrito ha sido modificado.");

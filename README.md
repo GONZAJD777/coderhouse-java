@@ -78,27 +78,27 @@ VALUES ('Paula Rodríguez', 'Bv. San Juan 890, Córdoba Capital, Córdoba', 4444
 ## POST/ http://localhost:8080/api/clients
 ### body
 {
-"clientName": "Ricardo Freitas",
-"clientAddress": "Illia 446, Córdoba Capital, Córdoba",
-"clientDocId": 1111111
+"mClientName": "Ricardo Freitas",
+"mClientAddress": "Illia 446, Córdoba Capital, Córdoba",
+"mClientDocId": 1111111
 }
 
 {
-"clientName": "Luciana Torres",
-"clientAddress": "Av. Colón 1234, Córdoba Capital, Córdoba",
-"clientDocId": 2222222
+"mClientName": "Luciana Torres",
+"mClientAddress": "Av. Colón 1234, Córdoba Capital, Córdoba",
+"mClientDocId": 2222222
 }
 
 {
-"clientName": "Martín Gómez",
-"clientAddress": "Calle Buenos Aires 567, Córdoba Capital, Córdoba",
-"clientDocId": 3333333
+"mClientName": "Martín Gómez",
+"mClientAddress": "Calle Buenos Aires 567, Córdoba Capital, Córdoba",
+"mClientDocId": 3333333
 }
 
 {
-"clientName": "Paula Rodríguez",
-"clientAddress": "Bv. San Juan 890, Córdoba Capital, Córdoba",
-"clientDocId": 4444444
+"mClientName": "Paula Rodríguez",
+"mClientAddress": "Bv. San Juan 890, Córdoba Capital, Córdoba",
+"mClientDocId": 4444444
 }
 ## GET/ http://localhost:8080/api/clients/{clientId}
 Listara el cliente {clientId} con su carrito y todos los items en el

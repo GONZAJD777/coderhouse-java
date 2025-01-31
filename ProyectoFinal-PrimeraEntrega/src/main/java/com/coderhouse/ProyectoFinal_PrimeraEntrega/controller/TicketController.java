@@ -104,6 +104,9 @@ public class TicketController {
     public ResponseEntity<ApiResponse<TicketExtendedDTO>> createTicket(@PathVariable Long pClientId) {
         try {
 
+
+
+
             TicketExtendedDTO mTicketExtendedDTO = mTicketService.createTicket(pClientId);
             ApiResponse<TicketExtendedDTO> mApiResponse = new ApiResponse<>(true,"El Ticket se genero correctamente.",mTicketExtendedDTO,null);
 

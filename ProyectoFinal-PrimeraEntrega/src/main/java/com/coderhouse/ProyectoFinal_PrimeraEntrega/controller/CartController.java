@@ -139,6 +139,8 @@ public class CartController {
             Long mClientId = ((Number) pRequestBody.get("cliente")).longValue();
             Object mCartDetailList = pRequestBody.get("detalleCarrito");
             Client mClient = mClientService.getClient(mClientId);
+            mCartService.clearCart(mClient.getmClientCart());
+
 
             if (!(mCartDetailList instanceof List<?>)) {
                 throw new CustomException(ErrorType.CART_DETAIL_FORMAT_ERROR);

@@ -91,7 +91,6 @@ public class CartService {
 
     @Transactional
     public Cart addProductToCart(Long pCartId, Long pProductId, int pItemQuantity) throws CustomException {
-
         try {
             if (!mCartRepository.existsActiveCartById(pCartId)) {
                 throw new CustomException(ErrorType.CART_NOT_FOUND,ErrorType.CART_NOT_FOUND.getFormattedMessage(pCartId));
@@ -137,6 +136,30 @@ public class CartService {
 
         } catch (CustomException ce) {
             throw ce;
+        } catch (DataAccessException dbe) {
+            throw new CustomException(ErrorType.DATABASE_ISSUES);
+        } catch (RuntimeException rte) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorType.SYSTEM_ERROR);
+        }
+    }
+
+    @Transactional
+    public Cart clearCart (Cart pCart) throws CustomException {
+        try {
+
+            List<CartDetail> mCartDetailList= pCart.getmCartDetailList();
+            int CartDetailLength=mCartDetailList.size();
+            for (int i = 0; i < CartDetailLength; i++) {
+                CartDetail mCartDetailItem = mCartDetailList.get(i);
+                mCartDetailList.remove(mCartDetailItem);
+                mCartDetailItem.setmCartDetailCart(null);
+                mCartDetailRepository.delete(mCartDetailItem); // Asegurar eliminación
+            }
+
+            pCart.setmCartDetailList(mCartDetailList);
+            return mCartRepository.save(pCart);
         } catch (DataAccessException dbe) {
             throw new CustomException(ErrorType.DATABASE_ISSUES);
         } catch (RuntimeException rte) {

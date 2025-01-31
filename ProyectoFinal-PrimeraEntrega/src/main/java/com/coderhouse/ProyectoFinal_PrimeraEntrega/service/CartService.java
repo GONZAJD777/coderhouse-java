@@ -145,19 +145,17 @@ public class CartService {
         }
     }
 
-    @Transactional
-    public Cart clearCart (Cart pCart) throws CustomException {
+    public Cart clearCart(Cart pCart) throws CustomException {
         try {
+            List<CartDetail> mCartDetailList = pCart.getmCartDetailList();
+            List<CartDetail> itemsToRemove = new ArrayList<>(mCartDetailList);
 
-            List<CartDetail> mCartDetailList= pCart.getmCartDetailList();
-            int CartDetailLength=mCartDetailList.size();
-            for (int i = 0; i < CartDetailLength; i++) {
-                CartDetail mCartDetailItem = mCartDetailList.get(i);
-                mCartDetailList.remove(mCartDetailItem);
+            for (CartDetail mCartDetailItem : itemsToRemove) {
                 mCartDetailItem.setmCartDetailCart(null);
                 mCartDetailRepository.delete(mCartDetailItem); // Asegurar eliminación
             }
 
+            mCartDetailList.clear();
             pCart.setmCartDetailList(mCartDetailList);
             return mCartRepository.save(pCart);
         } catch (DataAccessException dbe) {
@@ -168,6 +166,7 @@ public class CartService {
             throw new CustomException(ErrorType.SYSTEM_ERROR);
         }
     }
+
 
     @Transactional
     public Cart updateCartDetailList(Long pCartId, Object pCartDetailList) throws CustomException {

@@ -123,7 +123,7 @@ public class CartController {
     @Operation(summary = "Modifica el detalle del carrito",
             description = "Modificara los items del carrito agregando o quitando las unidades especificadas de cada producto, siempre y cuando estos esten activos al igual que el carrito.<br>" +
                     "Si se introduce una cantidad negativa de productos intentara reducir la cantidad de dicho producto del carrito, siempre y cuando exista en el detalle.<br>" +
-                    "Si la cantidad resutlante es negativa, eliminara el item y si no existiera en el carrito informara el error."
+                    "Esta operacion pisara cualquier item que el cliente tenga el carrito, con lo seteado en el request."
             ,requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(  content = @Content( schema = @Schema(implementation = SellingApiRequest.class)  ) )
             ,responses = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),

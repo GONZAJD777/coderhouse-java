@@ -6,9 +6,13 @@ import com.coderhouse.ProyectoFinal_PrimeraEntrega.exception.CustomException;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.handler.ErrorHandler;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.ProductMapper;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Product;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.request.ProductApiRequest;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.request.SellingApiRequest;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.response.ApiResponse;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.InternalServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,19 +69,35 @@ public class ProductController {
     }
 
     @Operation(summary = "Crea un Producto con la informacion provista",
-            description = "Crea un Producto con la informacion provista.")
+            description = "Crea un Producto con la informacion provista."
+            ,requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(  content = @Content( schema = @Schema(implementation = ProductApiRequest.class)  ) )
+            ,responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     @PostMapping
     public ResponseEntity<ApiResponse<ProductDTO>> createProduct(@RequestBody Product pProduct) {
-        System.out.println("Client ProductId:" + pProduct.getmProductId());
-        System.out.println("Client ProductName:" + pProduct.getmProductName());
-        System.out.println("Client ProductDescription:" + pProduct.getmProductDescription());
-        System.out.println("Client ProductCode:" + pProduct.getmProductCode());
-        System.out.println("Client ProductStock:" + pProduct.getmProductStock());
-        System.out.println("Client ProductPrice:" + pProduct.getmProductPrice());
-        System.out.println("Client ProductTaxPercent:" + pProduct.getmProductTaxPercent());
 
         try {
-            ProductDTO mProductDTO = ProductMapper.toDTO(mProductService.createProduct(pProduct));
+            Product mProduct = new Product(
+                    pProduct.getmProductName(),
+                    pProduct.getmProductDescription(),
+                    pProduct.getmProductCategory(),
+                    pProduct.getmProductCode(),
+                    pProduct.getmProductPrice(),
+                    pProduct.getmProductTaxPercent(),
+                    pProduct.getmProductStock());
+
+            System.out.println("Client ProductId:" + pProduct.getmProductId());
+            System.out.println("Client ProductName:" + pProduct.getmProductName());
+            System.out.println("Client ProductDescription:" + pProduct.getmProductDescription());
+            System.out.println("Client ProductCode:" + pProduct.getmProductCode());
+            System.out.println("Client ProductStock:" + pProduct.getmProductStock());
+            System.out.println("Client ProductPrice:" + pProduct.getmProductPrice());
+            System.out.println("Client ProductTaxPercent:" + pProduct.getmProductTaxPercent());
+
+            ProductDTO mProductDTO = ProductMapper.toDTO(mProductService.createProduct(mProduct));
             ApiResponse<ProductDTO> mApiResponse = new ApiResponse<>(true,"Se ha creado el producto correctamente",mProductDTO,null);
             return ResponseEntity.status(HttpStatus.OK).body(mApiResponse);
         }catch (CustomException e) {
@@ -90,7 +110,13 @@ public class ProductController {
     @Operation(summary = "Actualiza la informacion del Producto",
             description = "Actualiza la informacion del Producto siempre y cuando no haya sido borrado.<br>" +
                     "No es posible actualizar la flag de baja o borrado logico.<>" +
-                    "El codigo de Producto no puede coincidir con ningun otro cliente en la base de datos, incluido el Producto que se intenta modificar.")
+                    "El codigo de Producto no puede coincidir con ningun otro cliente en la base de datos, incluido el Producto que se intenta modificar."
+            ,requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(  content = @Content( schema = @Schema(implementation = ProductApiRequest.class)  ) )
+            ,responses = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     @PutMapping("/{pProductId}")
     public ResponseEntity<ApiResponse<ProductDTO>> updateProduct(@PathVariable Long pProductId, @RequestBody Map<String, Object> pRequestBody) {
         Product mProduct = new Product();

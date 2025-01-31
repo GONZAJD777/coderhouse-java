@@ -9,6 +9,7 @@ public enum ErrorType {
 
     CLIENT_NOT_FOUND("Cliente no encontrado con ID %s."),
     CLIENT_DOC_ID_ALREADY_EXIST("El número de documento %s ya existe en otro cliente."),
+    CLIENT_DOC_NOT_NULLABLE("El documento del cliente no puede ser nulo"),
 
     TICKET_NOT_FOUND("Ticket %s no encontrado."),
     TICKET_HAS_NO_ITEMS("El ticket no se pudo generar, ningún ítem cumple las condiciones para completar la venta."),

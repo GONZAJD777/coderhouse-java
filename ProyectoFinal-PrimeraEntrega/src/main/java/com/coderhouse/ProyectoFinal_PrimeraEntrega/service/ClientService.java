@@ -68,14 +68,20 @@ public class ClientService {
     @Transactional
     public Client createClient(Client pClient) throws CustomException {
         try {
-            if (!mClientRepository.existsActiveByDoc(pClient.getmClientDocId())) {
+            if(pClient.getmClientDocId()==null){
+                throw new CustomException(ErrorType.CLIENT_DOC_NOT_NULLABLE,ErrorType.CLIENT_DOC_NOT_NULLABLE.getFormattedMessage(pClient.getmClientDocId()));
+            }
+            if (mClientRepository.existsActiveByDoc(pClient.getmClientDocId())) {
                 throw new CustomException(ErrorType.CLIENT_DOC_ID_ALREADY_EXIST,ErrorType.CLIENT_DOC_ID_ALREADY_EXIST.getFormattedMessage(pClient.getmClientDocId()));
             }
-                Cart pCart = mCartService.createCart(pClient);
-                pClient.setmClientCart(pCart);
-                pClient.setmClientCreationDate(LocalDateTime.now());
 
-                return mClientRepository.save(pClient);
+                Client mClient = new Client(pClient.getmClientName(), pClient.getmClientAddress(), pClient.getmClientDocId());
+
+                Cart pCart = mCartService.createCart(mClient);
+                mClient.setmClientCart(pCart);
+                mClient.setmClientCreationDate(LocalDateTime.now());
+
+                return mClientRepository.save(mClient);
 
         } catch (CustomException ce) {
             throw ce;
@@ -124,7 +130,7 @@ public class ClientService {
         }
     }
 
-
+    @Transactional
     public Client deleteClient(Long pClientId) throws CustomException {
         try {
             if (!mClientRepository.existsActiveById(pClientId)) {

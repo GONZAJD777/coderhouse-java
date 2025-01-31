@@ -30,6 +30,7 @@ public class ErrorHandler {
                  PRODUCT_CODE_NOT_NULLABLE,
                  CART_DETAIL_FORMAT_ERROR,
                  CART_ITEM_NOT_FOUND,
+                 CLIENT_DOC_NOT_NULLABLE,
                  INPUT_ERROR:
                 status = HttpStatus.BAD_REQUEST;
                 break;

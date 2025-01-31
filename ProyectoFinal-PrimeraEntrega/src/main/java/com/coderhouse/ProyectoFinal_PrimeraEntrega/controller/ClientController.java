@@ -6,9 +6,13 @@ import com.coderhouse.ProyectoFinal_PrimeraEntrega.exception.CustomException;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.handler.ErrorHandler;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.ClientMapper;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Client;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.request.ClientApiRequest;
+import com.coderhouse.ProyectoFinal_PrimeraEntrega.request.ProductApiRequest;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.response.ApiResponse;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.service.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.InternalServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,13 +71,18 @@ public class ClientController {
        }
     }
 
-    @Operation(summary = "Crea un cliente con la informacion provista",
-            description = "Crea un cliente con la informacion provista.")
+    @Operation(summary = "Crea un cliente con la informacion provista"
+            ,description = "Crea un cliente con la informacion provista."
+            ,requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(  content = @Content( schema = @Schema(implementation = ClientApiRequest.class)  ) )
+            ,responses = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     @PostMapping
     public ResponseEntity<ApiResponse<ClientDTO>> createClient(@RequestBody Client pClient) {
         System.out.println("Client Name:" + pClient.getmClientName());
         System.out.println("Client Address:" + pClient.getmClientAddress());
-        System.out.println("Client Cart:" + pClient.getmClientCart());
         System.out.println("Client DocId:" + pClient.getmClientDocId());
         try {
             ClientDTO mClientDTO = ClientMapper.toDTO(mClientService.createClient(pClient));
@@ -91,7 +100,13 @@ public class ClientController {
     @Operation(summary = "Actualiza la informacion del cliente",
             description = "Actualiza la informacion del cliente siempre y cuando no haya sido borrado.<br>" +
                     "No es posible actualizar la flag de baja o borrado logico.<>" +
-                    "El documento introducido no puede coincidir con ningun otro cliente en la base de datos, incluido el cliente que se intenta modificar.")
+                    "El documento introducido no puede coincidir con ningun otro cliente en la base de datos, incluido el cliente que se intenta modificar."
+            ,requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(  content = @Content( schema = @Schema(implementation = ClientApiRequest.class)  ) )
+            ,responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
     @PutMapping("/{pClientId}")
     public ResponseEntity<ApiResponse<ClientDTO>> updateClient(@PathVariable Long pClientId, @RequestBody Map<String, Object> pRequestBody) {
 
@@ -121,8 +136,8 @@ public class ClientController {
 
         }catch (CustomException e) {
             return ResponseEntity.status(ErrorHandler.getStatus(e.getErrorType())).
-                    body(new ApiResponse<>(false,ErrorHandler.getErrorMessage(e.getErrorType()),null,
-                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.toString())));
+                    body(new ApiResponse<>(false,e.getCustomExceptionText(),null,
+                            List.of(ErrorHandler.getStatus(e.getErrorType()).toString(),e.getErrorType().toString())));
         }
     }
 

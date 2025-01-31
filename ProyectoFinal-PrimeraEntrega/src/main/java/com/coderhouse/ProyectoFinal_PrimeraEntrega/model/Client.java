@@ -53,6 +53,7 @@ public class Client {
         this.mClientAddress = pClientAddress;
         this.mClientDocId = pClientDocId;
         this.mClientCreationDate= LocalDateTime.now();
+        this.mIsActiveFlag=true;
     }
 
     public Long getmClientId() {

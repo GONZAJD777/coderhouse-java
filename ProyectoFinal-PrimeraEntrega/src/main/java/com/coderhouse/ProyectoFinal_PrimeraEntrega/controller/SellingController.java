@@ -1,12 +1,10 @@
 package com.coderhouse.ProyectoFinal_PrimeraEntrega.controller;
 
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.cart.CartReducedDTO;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.product.ProductDTO;
+
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.dto.ticket.TicketExtendedDTO;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.exception.CustomException;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.handler.ErrorHandler;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.CartMapper;
-import com.coderhouse.ProyectoFinal_PrimeraEntrega.mapper.ProductMapper;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.Client;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.model.ErrorType;
 import com.coderhouse.ProyectoFinal_PrimeraEntrega.request.SellingApiRequest;
@@ -44,7 +42,7 @@ public class SellingController {
                     "Como se menciono hace uso de servicios los cuales incluyes validaciones encapsuladas de cada entidad interviniente en el proceso, por lo que ante un error en la logica de negocio se registrara el error en al respuesta."
             ,requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(  content = @Content( schema = @Schema(implementation = SellingApiRequest.class)  ) )
             ,responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Pedido creado exitosamente"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Operacion ejecutada correctamente"),
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error en la request",content = @Content(schema = @Schema(implementation = ApiResponse.class)) ),
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Error en el servicio",content = @Content(schema = @Schema(implementation = ApiResponse.class)))
     })

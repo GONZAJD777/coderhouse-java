@@ -59,11 +59,12 @@ public class ProductService {
     @Transactional
     public Product createProduct(Product pProduct) throws CustomException {
         try {
+
             if(mProductRepository.existsActiveByCode(pProduct.getmProductCode())){
                 throw new CustomException(ErrorType.PRODUCT_CODE_ALREADY_EXIST,ErrorType.PRODUCT_CODE_ALREADY_EXIST.getFormattedMessage(pProduct.getmProductCode()));
             }
             if(pProduct.getmProductCode()==null){
-                throw new CustomException(ErrorType.PRODUCT_CODE_NOT_NULLABLE);
+                throw new CustomException(ErrorType.PRODUCT_CODE_NOT_NULLABLE,ErrorType.PRODUCT_CODE_NOT_NULLABLE.getFormattedMessage());
             }
             pProduct.setmProductCreationDate(LocalDateTime.now());
             pProduct.setmIsActiveFlag(true);
